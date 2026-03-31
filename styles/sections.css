@@ -1,0 +1,55 @@
+/* ── TICKER ── */
+.ticker {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  padding: 14px 0;
+  background: var(--off);
+}
+.ticker-inner {
+  display: flex;
+  width: max-content;
+  animation: ticker 28s linear infinite;
+}
+.ticker-item {
+  font-family: 'Geist Mono', monospace;
+  font-size: .64rem;
+  color: var(--mid);
+  letter-spacing: .1em;
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  white-space: nowrap;
+}
+.ticker-item::after {
+  content: '/';
+  color: var(--border-2);
+}
+
+/* Domain tags */
+.ticker-item .tag {
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+}
+.ticker-item .tag-devops {
+  color: var(--green);
+  background: rgba(0, 184, 107, 0.08);
+  border-color: rgba(0, 184, 107, 0.2);
+}
+.ticker-item .tag-cloud {
+  color: var(--blue);
+  background: var(--blue-dim);
+  border-color: var(--blue-mid);
+}
+.ticker-item .tag-ai {
+  color: var(--orange);
+  background: rgba(255, 107, 26, 0.08);
+  border-color: rgba(255, 107, 26, 0.2);
+}
+
+@keyframes ticker {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
