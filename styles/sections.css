@@ -54,6 +54,98 @@
   100% { transform: translateX(-50%); }
 }
 
+/* ── MARKET INTELLIGENCE ── */
+.market {
+  padding: 110px 64px;
+  border-bottom: 1px solid var(--border);
+  background: var(--off);
+}
+.market-head {
+  text-align: center;
+  margin-bottom: 80px;
+}
+.market-head .eyebrow { margin-bottom: 14px; }
+.market-h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2rem, 3.2vw, 3.4rem);
+  font-weight: 400; color: var(--ink);
+  letter-spacing: -.02em; line-height: 1.1;
+  margin-top: 14px;
+}
+.market-h2 em { font-style: italic; color: var(--blue); }
+.market-tier { margin-bottom: 56px; }
+.market-tier:last-child { margin-bottom: 0; }
+.tier-label {
+  font-family: 'Geist Mono', monospace;
+  font-size: .6rem; letter-spacing: .14em;
+  padding-bottom: 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.tier-label::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+.tier-label--hot     { color: var(--orange); }
+.tier-label--growing { color: var(--green); }
+.tier-label--steady  { color: var(--mid); }
+.demand-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.demand-card {
+  background: var(--white);
+  padding: 36px 32px;
+  display: flex; flex-direction: column;
+}
+.demand-badge {
+  font-family: 'Geist Mono', monospace;
+  font-size: .58rem; letter-spacing: .08em;
+  padding: 3px 10px; border-radius: 100px;
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-bottom: 18px; width: fit-content;
+}
+.demand-badge--hot {
+  color: var(--orange);
+  background: rgba(255,107,26,0.08);
+  border: 1px solid rgba(255,107,26,0.2);
+}
+.demand-badge--growing {
+  color: var(--green);
+  background: rgba(0,184,107,0.08);
+  border: 1px solid rgba(0,184,107,0.2);
+}
+.demand-badge--steady {
+  color: var(--mid);
+  background: var(--off);
+  border: 1px solid var(--border-2);
+}
+.demand-role {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.15rem; color: var(--ink);
+  letter-spacing: -.01em; margin-bottom: 8px;
+}
+.demand-stat {
+  font-size: .8rem; color: var(--mid); line-height: 1.65;
+  margin-bottom: 20px;
+}
+.demand-skills {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 20px;
+}
+.demand-salary {
+  font-family: 'Geist Mono', monospace;
+  font-size: .65rem; color: var(--blue);
+  padding-top: 16px; margin-top: auto;
+  border-top: 1px solid var(--border);
+}
+.demand-salary span { color: var(--mid); margin-right: 6px; }
+
 /* ── PROCESS ── */
 .process {
   padding: 110px 64px;
