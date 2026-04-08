@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="/styles/hero.css" />
 <link rel="stylesheet" href="/styles/sections.css" />
 <link rel="stylesheet" href="/styles/footer.css" />
+<link rel="stylesheet" href="/styles/responsive.css" />
 <style>
   :root {
     --white:    #FFFFFF;
@@ -97,8 +98,7 @@
     border-bottom: 1px solid var(--border);
   }
   .spec-header {
-    display: grid; grid-template-columns: 1fr 1.5fr; gap: 80px;
-    align-items: end; margin-bottom: 72px;
+    display: block; margin-bottom: 72px;
   }
   .eyebrow {
     font-family: 'Geist Mono', monospace; font-size: .65rem; letter-spacing: .12em;
@@ -355,18 +355,29 @@
 </div>
 
 <!-- NAV -->
-<nav>
+<nav id="mainNav">
   <a class="nav-logo" href="#"><span class="nav-logo-dot"></span>Odiseus Talent</a>
-  <ul class="nav-center">
+
+  <ul class="nav-center" id="navMenu" role="list">
     <li><a href="#specialisms">Specialisms</a></li>
     <li><a href="#roles">Open Roles</a></li>
     <li><a href="#why">Why Odiseus</a></li>
     <li><a href="#process">Process</a></li>
+    <li><a href="#market">Market Intel</a></li>
+    <!-- Mobile-only CTA inside drawer -->
+    <li class="nav-drawer-cta">
+      <a href="#cta" class="nav-drawer-btn">Work With Us <span aria-hidden="true">→</span></a>
+    </li>
   </ul>
+
   <div class="nav-right">
     <span class="nav-tag">DevOps · Cloud · AI</span>
     <a href="#cta" class="nav-cta">Work With Us</a>
   </div>
+
+  <button class="nav-hamburger" id="navToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navMenu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -377,11 +388,11 @@
       <span class="pill-text">LONDON, ONTARIO · TECH TALENT SPECIALISTS · SINCE 2017</span>
     </div>
     <h1 class="hero-h1">
-      The engineers who build<br />tomorrow's <span id="cycleWord" class="italic">Cloud</span> — found.
+      The engineers who build<br />tomorrow's <span id="cycleWord" class="italic">Cloud</span><br />— found.
     </h1>
     <p class="hero-sub">
       Odiseus Talent connects DevOps, Cloud, and AI engineers with
-      companies building the future — in London, Ontario and beyond.
+      companies building the future — in Canada, USA and beyond.
     </p>
     <div class="hero-ctas">
       <a href="#roles" class="btn-dark">Browse Open Roles</a>
@@ -391,23 +402,23 @@
 
   <div class="hero-stats">
     <div class="hstat">
-      <div class="hstat-num">1,<span>800</span>+</div>
+      <div class="hstat-num"><span>187</span>+</div>
       <div class="hstat-label">Tech placements made</div>
-      <div class="hstat-mono">// since 2017</div>
+      <div class="hstat-mono">// since 2021</div>
     </div>
     <div class="hstat">
-      <div class="hstat-num"><span>16</span>d</div>
+      <div class="hstat-num"><span>12</span>w</div>
       <div class="hstat-label">Average time-to-offer</div>
       <div class="hstat-mono">// industry avg: 42d</div>
     </div>
     <div class="hstat">
       <div class="hstat-num"><span>92</span>%</div>
-      <div class="hstat-label">12-month retention</div>
+      <div class="hstat-label">6-month retention</div>
       <div class="hstat-mono">// roles filled</div>
     </div>
     <div class="hstat">
       <div class="hstat-num"><span>140</span>+</div>
-      <div class="hstat-label">GTA tech clients</div>
+      <div class="hstat-label">Tech clients</div>
       <div class="hstat-mono">// active partners</div>
     </div>
   </div>
@@ -437,6 +448,146 @@
   </div>
 </div>
 
+<!-- MARKET INTELLIGENCE -->
+<section class="market" id="market">
+  <div class="market-head reveal">
+    <div class="eyebrow">// MARKET_DEMAND_REPORT</div>
+    <h2 class="market-h2">Where the talent market<br /><em>is moving.</em></h2>
+  </div>
+
+  <!-- TIER 1 -->
+  <div class="market-tier reveal">
+    <div class="tier-label tier-label--hot">TIER 1 — HOTTEST DEMAND</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--hot">Hottest demand</span>
+        <div class="demand-role">Cybersecurity Engineer / Analyst</div>
+        <p class="demand-stat">11.2% CAGR — 1 in 3 digital transformation projects is a security initiative</p>
+        <div class="demand-skills">
+          <span class="spec-tag">CISSP</span>
+          <span class="spec-tag">CCNP</span>
+          <span class="spec-tag">Cloud security</span>
+          <span class="spec-tag">Zero Trust</span>
+          <span class="spec-tag">SIEM/SOAR</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $83K–$140K</div>
+      </div>
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--hot">Hottest demand</span>
+        <div class="demand-role">AI / ML Engineer</div>
+        <p class="demand-stat">37% surge in demand since 2018 — Vector, Mila, Amii driving ecosystem</p>
+        <div class="demand-skills">
+          <span class="spec-tag">PyTorch</span>
+          <span class="spec-tag">LLM fine-tuning</span>
+          <span class="spec-tag">MLOps</span>
+          <span class="spec-tag">Python</span>
+          <span class="spec-tag">RAG</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $116K–$190K</div>
+      </div>
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--hot">Hottest demand</span>
+        <div class="demand-role">Cloud Engineer / Architect</div>
+        <p class="demand-stat">Cloud adoption accelerating across all Canadian industries — sector grows ~15% annually</p>
+        <div class="demand-skills">
+          <span class="spec-tag">AWS</span>
+          <span class="spec-tag">Azure</span>
+          <span class="spec-tag">Terraform</span>
+          <span class="spec-tag">GCP</span>
+          <span class="spec-tag">FinOps</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $100K–$160K</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER 2 -->
+  <div class="market-tier reveal">
+    <div class="tier-label tier-label--growing">TIER 2 — STRONG, CONSISTENT ORGANIC HIRING</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--growing">Growing</span>
+        <div class="demand-role">DevOps / Platform Engineer</div>
+        <p class="demand-stat">Demand driven by digital transformation programs — CI/CD, IaC skills critical</p>
+        <div class="demand-skills">
+          <span class="spec-tag">Kubernetes</span>
+          <span class="spec-tag">CI/CD</span>
+          <span class="spec-tag">GitHub Actions</span>
+          <span class="spec-tag">Ansible</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $90K–$145K</div>
+      </div>
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--growing">Growing</span>
+        <div class="demand-role">Data Scientist / Data Engineer</div>
+        <p class="demand-stat">Fastest-growing category — analytics and ML pipelines in demand across every vertical</p>
+        <div class="demand-skills">
+          <span class="spec-tag">SQL</span>
+          <span class="spec-tag">Spark</span>
+          <span class="spec-tag">dbt</span>
+          <span class="spec-tag">Tableau</span>
+          <span class="spec-tag">Python</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $85K–$140K</div>
+      </div>
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--growing">Growing</span>
+        <div class="demand-role">Solutions Architect</div>
+        <p class="demand-stat">98% of IT departments have active transformation initiatives — architects needed to design them</p>
+        <div class="demand-skills">
+          <span class="spec-tag">TOGAF</span>
+          <span class="spec-tag">AWS SA cert</span>
+          <span class="spec-tag">Microservices</span>
+          <span class="spec-tag">API design</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $110K–$170K</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER 3 -->
+  <div class="market-tier reveal">
+    <div class="tier-label tier-label--steady">TIER 3 — STABLE, SPECIALIST NICHES</div>
+    <div class="demand-grid">
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--steady">Steady</span>
+        <div class="demand-role">Software Engineer (Full-stack / Backend)</div>
+        <p class="demand-stat">JavaScript, Golang, R — healthcare, fintech, gaming specializations most sought</p>
+        <div class="demand-skills">
+          <span class="spec-tag">Node.js</span>
+          <span class="spec-tag">React</span>
+          <span class="spec-tag">Golang</span>
+          <span class="spec-tag">Microservices</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $80K–$135K</div>
+      </div>
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--steady">Steady</span>
+        <div class="demand-role">Business Systems Analyst</div>
+        <p class="demand-stat">Bridge between tech and business — rising demand as AI/cloud projects need translators</p>
+        <div class="demand-skills">
+          <span class="spec-tag">SQL</span>
+          <span class="spec-tag">Tableau</span>
+          <span class="spec-tag">Agile</span>
+          <span class="spec-tag">Stakeholder mgmt</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $70K–$110K</div>
+      </div>
+      <div class="demand-card">
+        <span class="demand-badge demand-badge--steady">Steady</span>
+        <div class="demand-role">IT Support / Infrastructure</div>
+        <p class="demand-stat">Bedrock of tech — consistent demand especially as cloud migration projects ramp up</p>
+        <div class="demand-skills">
+          <span class="spec-tag">CompTIA A+</span>
+          <span class="spec-tag">CCNP</span>
+          <span class="spec-tag">Azure AD</span>
+        </div>
+        <div class="demand-salary"><span>Salary range</span>CAD $50K–$85K</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SPECIALISMS -->
 <section class="specialisms" id="specialisms">
   <div class="spec-header reveal">
@@ -444,7 +595,6 @@
       <div class="eyebrow">// OUR_SPECIALISMS</div>
       <h2 class="spec-h2">Three domains.<br /><em>Deep expertise.</em></h2>
     </div>
-    <p class="spec-desc">We don't recruit across every tech category. We go deep in three and know them better than anyone — the tools, the certifications, the market rates, and the best people in the GTA.</p>
   </div>
   <div class="spec-grid reveal">
     <div class="spec-card">
@@ -512,17 +662,17 @@
         <div class="role-title-text">Senior Platform Engineer</div>
         <div class="role-co">FinTech Scale-up · Series C</div>
       </div>
-      <div class="role-loc">Toronto, ON (Hybrid)</div>
+      <div class="role-loc">New York, NY (Hybrid)</div>
       <div class="role-sal">$145–175K CAD</div>
       <div class="role-arrow">→</div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-ai">AI</span>
       <div>
-        <div class="role-title-text">ML Engineer — LLM & RAG</div>
-        <div class="role-co">AI Product Company · Toronto</div>
+        <div class="role-title-text">ML Engineer — LLM &amp; RAG</div>
+        <div class="role-co">AI Product Company · San Francisco</div>
       </div>
-      <div class="role-loc">Remote-Friendly (Canada)</div>
+      <div class="role-loc">Remote-Friendly (US / Canada)</div>
       <div class="role-sal">$155–195K CAD</div>
       <div class="role-arrow">→</div>
     </div>
@@ -530,9 +680,9 @@
       <span class="role-badge badge-cloud">Cloud</span>
       <div>
         <div class="role-title-text">AWS Solutions Architect</div>
-        <div class="role-co">Enterprise Retail · Toronto</div>
+        <div class="role-co">Enterprise Retail · Seattle</div>
       </div>
-      <div class="role-loc">Toronto, ON (Onsite)</div>
+      <div class="role-loc">Seattle, WA (Onsite)</div>
       <div class="role-sal">$160–190K CAD</div>
       <div class="role-arrow">→</div>
     </div>
@@ -540,9 +690,9 @@
       <span class="role-badge badge-devops">DevOps</span>
       <div>
         <div class="role-title-text">Site Reliability Engineer (SRE)</div>
-        <div class="role-co">Banking Platform · Bay Street</div>
+        <div class="role-co">Banking Platform · New York</div>
       </div>
-      <div class="role-loc">Toronto, ON (Hybrid)</div>
+      <div class="role-loc">Austin, TX (Hybrid)</div>
       <div class="role-sal">$140–170K CAD</div>
       <div class="role-arrow">→</div>
     </div>
@@ -550,25 +700,25 @@
       <span class="role-badge badge-ai">AI</span>
       <div>
         <div class="role-title-text">Director of AI Engineering</div>
-        <div class="role-co">Health-Tech Startup · Toronto</div>
+        <div class="role-co">Health-Tech Startup · Chicago</div>
       </div>
-      <div class="role-loc">Toronto, ON</div>
+      <div class="role-loc">Chicago, IL</div>
       <div class="role-sal">$200–240K CAD</div>
       <div class="role-arrow">→</div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-cloud">Cloud</span>
       <div>
-        <div class="role-title-text">FinOps & Cloud Cost Strategist</div>
-        <div class="role-co">Multi-cloud Enterprise · Mississauga</div>
+        <div class="role-title-text">FinOps &amp; Cloud Cost Strategist</div>
+        <div class="role-co">Multi-cloud Enterprise · Remote</div>
       </div>
-      <div class="role-loc">Hybrid · GTA</div>
+      <div class="role-loc">Hybrid · Remote</div>
       <div class="role-sal">$130–155K CAD</div>
       <div class="role-arrow">→</div>
     </div>
   </div>
   <div class="see-all">
-    <a href="#cta">See all 38 open roles</a>
+    <a href="#cta">Sign up to browse all 38+ open roles</a>
   </div>
 </section>
 
@@ -577,7 +727,7 @@
   <div class="why-content reveal">
     <div class="eyebrow">// WHY_ODISEUS</div>
     <h2 class="why-h2">We speak <em>engineer,</em><br />not just recruiter.</h2>
-    <p class="why-p">We've embedded ourselves in Toronto's DevOps, Cloud, and AI communities. Our consultants hold cloud certifications, attend KubeCon, and understand the difference between a K8s operator and a controller.</p>
+    <p class="why-p">We're active in AI communities and university ecosystems identifying rising talent before they even hit the job market. Our strength lies in career advisory: we know how to shape candidates to meet employer expectations, not just match job descriptions. Now we're bringing that same expertise to employers, ready to fill their open positions with pre-vetted, growth-oriented talent.</p>
     <div class="why-items">
       <div class="why-item">
         <div class="why-icon">🎯</div>
@@ -589,7 +739,7 @@
       <div class="why-item">
         <div class="why-icon">⚡</div>
         <div class="why-item-text">
-          <strong>16-Day Average to Offer</strong>
+          <strong>12-Week Average to Offer</strong>
           <span>Speed matters in a competitive market. Our process is built to move fast without sacrificing quality or fit.</span>
         </div>
       </div>
@@ -603,8 +753,8 @@
       <div class="why-item">
         <div class="why-icon">📍</div>
         <div class="why-item-text">
-          <strong>GTA-Rooted, Canada-Wide Reach</strong>
-          <span>Based on Bay Street, with active candidate pipelines across the Waterloo Corridor and Vancouver tech hubs.</span>
+          <strong>London, ON HQ — North America Reach</strong>
+          <span>Headquartered in London, Ontario with active candidate pipelines across Canada, the US, and offshore — built for speed and reach.</span>
         </div>
       </div>
     </div>
@@ -667,13 +817,14 @@
     <div class="toronto-info">
       <div class="toronto-info-row">
         <div>
-          <h3>Toronto HQ</h3>
-          <p>200 Bay Street, Suite 2400</p>
+          <h3>London, ON HQ</h3>
+          <p>3392 Wonderland Rd S, London, ON</p>
         </div>
-        <span class="spec-tag" style="font-family:'Geist Mono',monospace;font-size:.6rem;">🍁 Canada</span>
+                <span class="spec-tag" style="font-family:'Geist Mono',monospace;font-size:.6rem;">🍁 Canada</span>
+        <span class="spec-tag" style="font-family:'Geist Mono',monospace;font-size:.6rem;"> 🇺🇸 USA</span>
       </div>
       <div class="t-stat-row">
-        <div class="t-stat"><strong>3rd</strong><span>Largest tech hub in North America</span></div>
+        <div class="t-stat"><strong>Only</strong><span>Tech hub in Ontario with Indian offshore team.</span></div>
         <div class="t-stat"><strong>280K+</strong><span>Tech workers in the GTA</span></div>
       </div>
       <div class="toronto-tags">
