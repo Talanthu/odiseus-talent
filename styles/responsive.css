@@ -69,7 +69,7 @@
   .roles       { padding: 90px 40px; }
 
   /* ── WHY ── */
-  .why         { padding: 90px 40px; gap: 56px; }
+  .why         { padding: 90px 40px; }
 
   /* ── PROCESS ── */
   .process       { padding: 90px 40px; }
@@ -235,12 +235,13 @@
   .roles       { padding: 64px 24px; }
   .roles-head  { flex-direction: column; align-items: flex-start; gap: 20px; margin-bottom: 32px; }
   .roles-filters { flex-wrap: wrap; gap: 6px; }
-  .role-row    { grid-template-columns: auto 1fr auto; gap: 10px 14px; padding: 18px 20px; }
+  .role-row    { padding: 18px 20px; gap: 14px; }
+  .role-meta   { gap: 14px; }
   .role-loc,
   .role-sal    { display: none; }
 
   /* ── WHY ── */
-  .why { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px; }
+  .why { padding: 64px 24px; }
 
   /* ── PROCESS ── */
   .process       { padding: 64px 24px; }
@@ -304,8 +305,8 @@
 
   /* ── ROLES ── */
   .roles           { padding: 56px 20px; }
-  .role-row        { grid-template-columns: auto 1fr; gap: 8px 12px; padding: 16px 20px; }
-  .role-arrow      { display: none; }
+  .role-row        { padding: 16px 20px; gap: 12px; }
+  .role-meta       { display: none; }
   .role-title-text { font-size: .95rem; }
   .role-co         { font-size: .72rem; }
 

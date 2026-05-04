@@ -71,6 +71,9 @@
     width: 8px; height: 8px; border-radius: 50%; background: var(--blue);
     display: inline-block; flex-shrink: 0;
   }
+  .nav-logo-talent {
+    font-style: italic; color: var(--blue);
+  }
   .nav-center { display: flex; gap: 36px; list-style: none; }
   .nav-center a {
     font-size: .78rem; font-weight: 500; letter-spacing: .04em;
@@ -173,15 +176,18 @@
   }
   .roles-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
   .role-row {
-    background: var(--white); padding: 28px 36px;
-    display: grid; grid-template-columns: auto 1fr auto auto auto;
-    gap: 28px; align-items: center;
+    background: var(--white); padding: 24px 36px;
+    display: flex; align-items: center; gap: 24px;
     transition: background .2s; cursor: none;
   }
+  .role-row .role-info { flex: 1; min-width: 0; }
+  .role-row .role-meta { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
   .role-row:hover { background: var(--off); }
   .role-badge {
     font-family: 'Geist Mono', monospace; font-size: .58rem; letter-spacing: .08em;
-    padding: 5px 11px; border-radius: 4px; white-space: nowrap;
+    padding: 5px 0; border-radius: 4px; white-space: nowrap;
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 72px; flex-shrink: 0;
   }
   .badge-devops { background: rgba(0,184,107,0.1); color: var(--green); border: 1px solid rgba(0,184,107,0.2); }
   .badge-cloud  { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue-mid); }
@@ -219,7 +225,6 @@
   /* ── WHY US ── */
   .why {
     padding: 110px 64px;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center;
     border-bottom: 1px solid var(--border);
   }
   .why-content .eyebrow { margin-bottom: 16px; }
@@ -356,7 +361,7 @@
 
 <!-- NAV -->
 <nav id="mainNav">
-  <a class="nav-logo" href="#"><span class="nav-logo-dot"></span>Odiseus Talent</a>
+  <a class="nav-logo" href="#"><span class="nav-logo-dot"></span>Odiseus <em class="nav-logo-talent">Talent</em></a>
 
   <ul class="nav-center" id="navMenu" role="list">
     <li><a href="#specialisms">Specialisms</a></li>
@@ -385,7 +390,7 @@
   <div class="hero-body">
     <div class="hero-pill">
       <div class="pill-dot"></div>
-      <span class="pill-text">LONDON, ONTARIO · TECH TALENT SPECIALISTS · SINCE 2017</span>
+      <span class="pill-text">LONDON, ONTARIO · TECH TALENT SPECIALISTS · SINCE 2019</span>
     </div>
     <h1 class="hero-h1">
       The engineers who build<br />tomorrow's <span id="cycleWord" class="italic">Cloud</span><br />— found.
@@ -658,63 +663,75 @@
   <div class="roles-list reveal">
     <div class="role-row">
       <span class="role-badge badge-devops">DevOps</span>
-      <div>
+      <div class="role-info">
         <div class="role-title-text">Senior Platform Engineer</div>
         <div class="role-co">FinTech Scale-up · Series C</div>
       </div>
-      <div class="role-loc">New York, NY (Hybrid)</div>
-      <div class="role-sal">$145–175K CAD</div>
-      <div class="role-arrow">→</div>
+      <div class="role-meta">
+        <div class="role-loc">New York, NY (Hybrid)</div>
+        <div class="role-sal">$145–175K CAD</div>
+        <div class="role-arrow">→</div>
+      </div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-ai">AI</span>
-      <div>
+      <div class="role-info">
         <div class="role-title-text">ML Engineer — LLM &amp; RAG</div>
         <div class="role-co">AI Product Company · San Francisco</div>
       </div>
-      <div class="role-loc">Remote-Friendly (US / Canada)</div>
-      <div class="role-sal">$155–195K CAD</div>
-      <div class="role-arrow">→</div>
+      <div class="role-meta">
+        <div class="role-loc">Remote-Friendly (US / Canada)</div>
+        <div class="role-sal">$155–195K CAD</div>
+        <div class="role-arrow">→</div>
+      </div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-cloud">Cloud</span>
-      <div>
+      <div class="role-info">
         <div class="role-title-text">AWS Solutions Architect</div>
         <div class="role-co">Enterprise Retail · Seattle</div>
       </div>
-      <div class="role-loc">Seattle, WA (Onsite)</div>
-      <div class="role-sal">$160–190K CAD</div>
-      <div class="role-arrow">→</div>
+      <div class="role-meta">
+        <div class="role-loc">Seattle, WA (Onsite)</div>
+        <div class="role-sal">$160–190K CAD</div>
+        <div class="role-arrow">→</div>
+      </div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-devops">DevOps</span>
-      <div>
+      <div class="role-info">
         <div class="role-title-text">Site Reliability Engineer (SRE)</div>
         <div class="role-co">Banking Platform · New York</div>
       </div>
-      <div class="role-loc">Austin, TX (Hybrid)</div>
-      <div class="role-sal">$140–170K CAD</div>
-      <div class="role-arrow">→</div>
+      <div class="role-meta">
+        <div class="role-loc">Austin, TX (Hybrid)</div>
+        <div class="role-sal">$140–170K CAD</div>
+        <div class="role-arrow">→</div>
+      </div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-ai">AI</span>
-      <div>
+      <div class="role-info">
         <div class="role-title-text">Director of AI Engineering</div>
         <div class="role-co">Health-Tech Startup · Chicago</div>
       </div>
-      <div class="role-loc">Chicago, IL</div>
-      <div class="role-sal">$200–240K CAD</div>
-      <div class="role-arrow">→</div>
+      <div class="role-meta">
+        <div class="role-loc">Chicago, IL</div>
+        <div class="role-sal">$200–240K CAD</div>
+        <div class="role-arrow">→</div>
+      </div>
     </div>
     <div class="role-row">
       <span class="role-badge badge-cloud">Cloud</span>
-      <div>
+      <div class="role-info">
         <div class="role-title-text">FinOps &amp; Cloud Cost Strategist</div>
         <div class="role-co">Multi-cloud Enterprise · Remote</div>
       </div>
-      <div class="role-loc">Hybrid · Remote</div>
-      <div class="role-sal">$130–155K CAD</div>
-      <div class="role-arrow">→</div>
+      <div class="role-meta">
+        <div class="role-loc">Hybrid · Remote</div>
+        <div class="role-sal">$130–155K CAD</div>
+        <div class="role-arrow">→</div>
+      </div>
     </div>
   </div>
   <div class="see-all">
@@ -760,82 +777,6 @@
     </div>
   </div>
 
-  <div class="toronto-card reveal">
-    <div class="toronto-map-area">
-      <svg class="t-skyline" viewBox="0 0 520 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
-        <defs>
-          <linearGradient id="bG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#C7D8F0"/>
-            <stop offset="100%" stop-color="#EEF4FF"/>
-          </linearGradient>
-          <linearGradient id="bB" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#2A5FCC" stop-opacity=".5"/>
-            <stop offset="100%" stop-color="#1A3A88" stop-opacity=".9"/>
-          </linearGradient>
-          <linearGradient id="bB2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1A4EFF" stop-opacity=".3"/>
-            <stop offset="100%" stop-color="#1A3A88" stop-opacity=".7"/>
-          </linearGradient>
-        </defs>
-        <rect width="520" height="220" fill="url(#bG)"/>
-        <!-- Clouds -->
-        <ellipse cx="80"  cy="30" rx="40" ry="14" fill="white" opacity=".6"/>
-        <ellipse cx="110" cy="26" rx="28" ry="12" fill="white" opacity=".5"/>
-        <ellipse cx="380" cy="22" rx="36" ry="12" fill="white" opacity=".5"/>
-        <!-- Buildings -->
-        <rect x="0"   y="150" width="30" height="70"  fill="url(#bB)"/>
-        <rect x="33"  y="160" width="24" height="60"  fill="url(#bB2)"/>
-        <rect x="62"  y="135" width="38" height="85"  fill="url(#bB)"/>
-        <rect x="104" y="148" width="26" height="72"  fill="url(#bB2)"/>
-        <rect x="134" y="125" width="45" height="95"  fill="url(#bB)"/>
-        <!-- Windows on buildings -->
-        <rect x="137" y="134" width="5" height="4" fill="rgba(255,255,255,0.5)"/>
-        <rect x="147" y="134" width="5" height="4" fill="rgba(255,255,255,0.3)"/>
-        <rect x="157" y="134" width="5" height="4" fill="rgba(255,255,255,0.5)"/>
-        <rect x="137" y="144" width="5" height="4" fill="rgba(255,255,255,0.4)"/>
-        <rect x="147" y="144" width="5" height="4" fill="rgba(26,78,255,0.6)"/>
-        <!-- CN Tower -->
-        <polygon points="248,12 255,12 270,220 233,220" fill="url(#bB)"/>
-        <ellipse cx="251" cy="105" rx="20" ry="9" fill="#1A4EFF" opacity=".8"/>
-        <rect x="249" y="12" width="4" height="30" fill="#1A4EFF" opacity=".9"/>
-        <circle cx="251" cy="10" r="3" fill="#FF4444" opacity=".9"/>
-        <!-- Right buildings -->
-        <rect x="288" y="140" width="38" height="80"  fill="url(#bB)"/>
-        <rect x="330" y="155" width="28" height="65"  fill="url(#bB2)"/>
-        <rect x="362" y="130" width="50" height="90"  fill="url(#bB)"/>
-        <rect x="416" y="150" width="34" height="70"  fill="url(#bB2)"/>
-        <rect x="454" y="138" width="42" height="82"  fill="url(#bB)"/>
-        <rect x="500" y="160" width="20" height="60"  fill="url(#bB2)"/>
-        <!-- Window lights right side -->
-        <rect x="365" y="140" width="5" height="4" fill="rgba(255,255,255,0.5)"/>
-        <rect x="376" y="140" width="5" height="4" fill="rgba(26,78,255,0.5)"/>
-        <rect x="365" y="150" width="5" height="4" fill="rgba(255,255,255,0.3)"/>
-        <!-- Lake reflection line -->
-        <rect x="0" y="215" width="520" height="5" fill="rgba(26,78,255,0.1)"/>
-      </svg>
-    </div>
-    <div class="toronto-info">
-      <div class="toronto-info-row">
-        <div>
-          <h3>London, ON HQ</h3>
-          <p>3392 Wonderland Rd S, London, ON</p>
-        </div>
-                <span class="spec-tag" style="font-family:'Geist Mono',monospace;font-size:.6rem;">🍁 Canada</span>
-        <span class="spec-tag" style="font-family:'Geist Mono',monospace;font-size:.6rem;"> 🇺🇸 USA</span>
-      </div>
-      <div class="t-stat-row">
-        <div class="t-stat"><strong>Only</strong><span>Tech hub in Ontario with Indian offshore team.</span></div>
-        <div class="t-stat"><strong>280K+</strong><span>Tech workers in the GTA</span></div>
-      </div>
-      <div class="toronto-tags">
-        <span class="spec-tag">MaRS District</span>
-        <span class="spec-tag">Waterloo Corridor</span>
-        <span class="spec-tag">Bay Street</span>
-        <span class="spec-tag">Distillery Tech</span>
-        <span class="spec-tag">Yonge–Eglinton</span>
-      </div>
-    </div>
-  </div>
 </section>
 
 <!-- PROCESS -->
@@ -932,14 +873,13 @@
     <!-- Brand column -->
     <div>
       <div class="f-logo"><span class="nav-logo-dot"></span>Odiseus Talent</div>
-      <p class="f-tagline">London Ontario's specialist recruitment partner for DevOps, Cloud Infrastructure, and AI engineering.</p>
+      <p class="f-tagline">Recruitment partner for DevOps, Cloud Infrastructure, and AI engineering.</p>
 
       <div class="f-office-label">CANADA — HEAD OFFICE</div>
       <div class="f-address">
         3392 Wonderland Rd S<br />
         London, ON N6L 1A8, Canada<br />
         info@odiseussoftware.com<br />
-        hr@odiseussoftware.com
       </div>
 
       <div class="f-office-label">OFFSHORE — HYDERABAD, INDIA</div>
@@ -972,7 +912,6 @@
         <li><a href="#">About Odiseus</a></li>
         <li><a href="#">Our Team</a></li>
         <li><a href="#">Client Stories</a></li>
-        <li><a href="#">GTA Tech Report</a></li>
         <li><a href="#">Careers</a></li>
       </ul>
     </div>
@@ -991,9 +930,9 @@
 
   </div>
   <div class="footer-bottom">
-    <span class="f-copy">© 2025 ODISEUS TALENT INC · LONDON, ONTARIO · ALL RIGHTS RESERVED</span>
+    <span class="f-copy">© 2026 ODISEUS TALENT INC · LONDON, ONTARIO · ALL RIGHTS RESERVED</span>
     <div class="f-socials">
-      <a href="#">LinkedIn</a>
+      <a href="https://www.linkedin.com/company/odiseussoftware" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       <a href="#">Twitter / X</a>
       <a href="#">Privacy Policy</a>
     </div>
