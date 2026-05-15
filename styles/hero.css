@@ -270,6 +270,16 @@ body.custom-cursor-enabled .cursor {
   transform: translateY(-6.5px) rotate(-45deg);
 }
 
+.nav-sep {
+  color: var(--border-2);
+  font-size: 1rem;
+  font-weight: 300;
+  user-select: none;
+  padding: 0 2px;
+  line-height: 1;
+  list-style: none;
+}
+
 .nav-drawer-cta {
   display: none;
 }
