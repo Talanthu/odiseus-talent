@@ -1,975 +1,1202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Odiseus Talent — DevOps · Cloud · AI Recruitment · Toronto</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/styles/hero.css" />
-<link rel="stylesheet" href="/styles/sections.css" />
-<link rel="stylesheet" href="/styles/footer.css" />
-<link rel="stylesheet" href="/styles/responsive.css" />
-<style>
-  :root {
-    --white:    #FFFFFF;
-    --off:      #F7F7F5;
-    --paper:    #F2F1EE;
-    --ink:      #0A0A0F;
-    --ink-2:    #1C1C26;
-    --mid:      #6B6B7A;
-    --light:    #AEAEBC;
-    --border:   #E4E4E8;
-    --border-2: #D0D0D8;
-    --blue:     #1A4EFF;
-    --blue-dim: rgba(26,78,255,0.08);
-    --blue-mid: rgba(26,78,255,0.15);
-    --green:    #00B86B;
-    --orange:   #FF6B1A;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--white);
-    color: var(--ink);
-    font-family: 'Geist', sans-serif;
-    font-weight: 400;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  /* ── CURSOR ── */
-  .cursor { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; }
-  .c-dot  {
-    width: 7px; height: 7px; border-radius: 50%; background: var(--blue);
-    position: absolute; transform: translate(-50%,-50%);
-  }
-  .c-ring {
-    width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--blue);
-    position: absolute; transform: translate(-50%,-50%);
-    transition: all .12s ease; opacity: .45;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; width: 100%; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 22px 64px;
-    background: rgba(255,255,255,0.88);
-    backdrop-filter: blur(18px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.3rem; letter-spacing: -.01em;
-    color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px;
-  }
-  .nav-logo-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: var(--blue);
-    display: inline-block; flex-shrink: 0;
-  }
-  .nav-logo-talent {
-    font-style: italic; color: var(--blue);
-  }
-  .nav-center { display: flex; gap: 36px; list-style: none; }
-  .nav-center a {
-    font-size: .78rem; font-weight: 500; letter-spacing: .04em;
-    color: var(--mid); text-decoration: none; transition: color .2s;
-  }
-  .nav-center a:hover { color: var(--ink); }
-  .nav-right { display: flex; gap: 14px; align-items: center; }
-  .nav-tag {
-    font-family: 'Geist Mono', monospace;
-    font-size: .62rem; color: var(--blue);
-    background: var(--blue-dim); border: 1px solid var(--blue-mid);
-    padding: 4px 10px; border-radius: 4px; letter-spacing: .04em;
-  }
-  .nav-cta {
-    font-size: .75rem; font-weight: 600; letter-spacing: .03em;
-    background: var(--ink); color: var(--white);
-    padding: 10px 22px; border-radius: 6px; text-decoration: none;
-    cursor: none; transition: background .2s;
-  }
-  .nav-cta:hover { background: var(--blue); }
-
-  /* ── SPECIALISMS ── */
-  .specialisms {
-    padding: 110px 64px;
-    border-bottom: 1px solid var(--border);
-  }
-  .spec-header {
-    display: block; margin-bottom: 72px;
-  }
-  .eyebrow {
-    font-family: 'Geist Mono', monospace; font-size: .65rem; letter-spacing: .12em;
-    color: var(--blue); margin-bottom: 16px;
-  }
-  .spec-h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2rem, 3.2vw, 3.4rem); font-weight: 400; line-height: 1.1;
-    color: var(--ink); letter-spacing: -.02em;
-  }
-  .spec-h2 em { font-style: italic; color: var(--blue); }
-  .spec-desc { color: var(--mid); line-height: 1.8; font-size: .93rem; max-width: 480px; }
-  .spec-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
-  .spec-card {
-    background: var(--white); padding: 52px 44px;
-    display: flex; flex-direction: column; gap: 0;
-    border-bottom: 3px solid transparent;
-    transition: border-color .25s, background .25s;
-    cursor: none; position: relative; overflow: hidden;
-  }
-  .spec-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--blue), transparent);
-    opacity: 0; transition: opacity .3s;
-  }
-  .spec-card:hover { border-bottom-color: var(--blue); background: var(--off); }
-  .spec-card:hover::before { opacity: 1; }
-  .spec-icon {
-    width: 48px; height: 48px; border-radius: 10px;
-    border: 1px solid var(--border); background: var(--white);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; margin-bottom: 28px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.05);
-  }
-  .spec-title {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.4rem; color: var(--ink); margin-bottom: 16px; letter-spacing: -.01em;
-  }
-  .spec-body { color: var(--mid); font-size: .875rem; line-height: 1.78; margin-bottom: 32px; }
-  .spec-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
-  .spec-tag {
-    font-family: 'Geist Mono', monospace;
-    font-size: .6rem; color: var(--mid);
-    border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px;
-    background: var(--off); letter-spacing: .04em;
-  }
-
-  /* ── ROLES ── */
-  .roles { padding: 110px 64px; background: var(--off); border-bottom: 1px solid var(--border); }
-  .roles-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 52px; }
-  .roles-h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(1.8rem, 2.8vw, 3rem); font-weight: 400; color: var(--ink); letter-spacing: -.02em;
-  }
-  .roles-h2 em { font-style: italic; color: var(--blue); }
-
-    .spec-h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2rem, 3.2vw, 3.4rem); font-weight: 400; line-height: 1.1;
-    color: var(--ink); letter-spacing: -.02em;
-  }
-  .spec-h2 em { font-style: italic; color: var(--blue); }
-  .roles-filters { display: flex; gap: 8px; }
-  .filter-btn {
-    font-family: 'Geist Mono', monospace; font-size: .64rem; letter-spacing: .06em;
-    border: 1px solid var(--border-2); color: var(--mid); background: var(--white);
-    padding: 6px 14px; border-radius: 4px; cursor: none; transition: all .2s;
-  }
-  .filter-btn.active, .filter-btn:hover {
-    background: var(--ink); color: var(--white); border-color: var(--ink);
-  }
-  .roles-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
-  .role-row {
-    background: var(--white); padding: 24px 36px;
-    display: flex; align-items: center; gap: 24px;
-    transition: background .2s; cursor: none;
-  }
-  .role-row .role-info { flex: 1; min-width: 0; }
-  .role-row .role-meta { display: flex; align-items: center; gap: 24px; flex-shrink: 0; }
-  .role-row:hover { background: var(--off); }
-  .role-badge {
-    font-family: 'Geist Mono', monospace; font-size: .58rem; letter-spacing: .08em;
-    padding: 5px 0; border-radius: 4px; white-space: nowrap;
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 72px; flex-shrink: 0;
-  }
-  .badge-devops { background: rgba(0,184,107,0.1); color: var(--green); border: 1px solid rgba(0,184,107,0.2); }
-  .badge-cloud  { background: var(--blue-dim); color: var(--blue); border: 1px solid var(--blue-mid); }
-  .badge-ai     { background: rgba(255,107,26,0.1); color: var(--orange); border: 1px solid rgba(255,107,26,0.2); }
-  .role-title-text {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.1rem; color: var(--ink); letter-spacing: -.01em;
-  }
-  .role-co { font-size: .78rem; color: var(--mid); margin-top: 3px; }
-  .role-loc {
-    font-family: 'Geist Mono', monospace; font-size: .65rem; color: var(--mid);
-    display: flex; align-items: center; gap: 6px;
-  }
-  .role-loc::before { content: '📍'; font-size: .75rem; }
-  .role-sal {
-    font-family: 'Geist Mono', monospace; font-size: .7rem; color: var(--ink); font-weight: 500;
-  }
-  .role-arrow {
-    font-size: 1rem; color: var(--blue); opacity: 0; transform: translateX(-6px);
-    transition: opacity .2s, transform .2s;
-  }
-  .role-row:hover .role-arrow { opacity: 1; transform: translateX(0); }
-  .see-all {
-    margin-top: 32px; text-align: center;
-  }
-  .see-all a {
-    font-size: .8rem; font-weight: 500; color: var(--blue); text-decoration: none;
-    display: inline-flex; align-items: center; gap: 8px;
-    border-bottom: 1px solid var(--blue-mid); padding-bottom: 2px;
-    transition: gap .2s;
-  }
-  .see-all a:hover { gap: 14px; }
-  .see-all a::after { content: '→'; }
-
-  /* ── WHY US ── */
-  .why {
-    padding: 110px 64px;
-    border-bottom: 1px solid var(--border);
-  }
-  .why-content .eyebrow { margin-bottom: 16px; }
-  .why-h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(2rem, 3vw, 3.2rem);  font-weight: 400; color: var(--ink); line-height: 1.1;
-    letter-spacing: -.02em; margin-bottom: 24px;
-  }
-  .why-h2 em { font-style: italic; color: var(--blue); }
-  .why-p { color: var(--mid); line-height: 1.8; font-size: .93rem; margin-bottom: 36px; }
-  .why-items { display: flex; flex-direction: column; gap: 20px; }
-  .why-item {
-    display: flex; gap: 16px; align-items: flex-start;
-  }
-  .why-icon {
-    width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
-    background: var(--blue-dim); border: 1px solid var(--blue-mid);
-    display: flex; align-items: center; justify-content: center; font-size: .9rem;
-  }
-  .why-item-text strong {
-    display: block; font-size: .87rem; font-weight: 600; color: var(--ink); margin-bottom: 4px;
-  }
-  .why-item-text span { font-size: .83rem; color: var(--mid); line-height: 1.6; }
-
-  /* Toronto card right */
-  .toronto-card {
-    background: var(--off); border: 1px solid var(--border); border-radius: 12px;
-    overflow: hidden; position: relative;
-  }
-  .toronto-map-area {
-    height: 260px; background: linear-gradient(135deg, #EEF2FF 0%, #E8F4FF 100%);
-    position: relative; overflow: hidden;
-    display: flex; align-items: flex-end; justify-content: center;
-  }
-  .t-skyline {
-    width: 100%; height: 85%;
-  }
-  .toronto-info { padding: 28px 32px; }
-  .toronto-info-row {
-    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;
-  }
-  .toronto-info-row h3 {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.3rem; color: var(--ink); letter-spacing: -.01em;
-  }
-  .toronto-info-row p { font-size: .78rem; color: var(--mid); margin-top: 4px; }
-  .t-stat-row { display: flex; gap: 28px; }
-  .t-stat strong {
-    display: block; font-family: 'Instrument Serif', serif;
-    font-size: 1.6rem; color: var(--blue);
-  }
-  .t-stat span { font-size: .7rem; color: var(--mid); }
-  .toronto-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
-  .toronto-tags .spec-tag { font-size: .58rem; }
-
-  /* ── PROCESS ── */
-  /* ── TESTIMONIAL ── */
-  .testimonial {
-    padding: 110px 64px; background: var(--off); border-bottom: 1px solid var(--border);
-    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
-  }
-  .testi-h2 {
-    font-family: 'Instrument Serif', serif;
-    font-size: clamp(1.8rem, 2.6vw, 2.8rem);  font-weight: 400; color: var(--ink);
-    letter-spacing: -.02em; margin-top: 14px; margin-bottom: 20px;
-  }
-  .testi-h2 em { font-style: italic; color: var(--blue); }
-  .testi-p { color: var(--mid); line-height: 1.8; font-size: .9rem; }
-  .quote-wrap {
-    background: var(--white); border: 1px solid var(--border); border-radius: 12px;
-    padding: 48px; position: relative;
-  }
-  .quote-wrap::before {
-    content: '"';
-    font-family: 'Instrument Serif', serif; font-size: 5rem; line-height: .6;
-    color: var(--blue); opacity: .15; position: absolute; top: 36px; left: 44px;
-  }
-  .q-text {
-    font-family: 'Instrument Serif', serif;
-    font-size: 1.35rem; font-style: italic; line-height: 1.6;
-    color: var(--ink); margin-bottom: 32px; margin-top: 20px;
-    letter-spacing: -.01em;
-  }
-  .q-author { display: flex; align-items: center; gap: 14px; }
-  .q-avatar {
-    width: 42px; height: 42px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue) 0%, #6B8FFF 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Instrument Serif', serif; font-size: 1.1rem; color: white;
-    flex-shrink: 0;
-  }
-  .q-name { font-size: .85rem; font-weight: 600; color: var(--ink); }
-  .q-role { font-size: .78rem; color: var(--mid); margin-top: 2px; }
-  .q-rating {
-    margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border);
-    display: flex; gap: 32px;
-  }
-  .q-metric strong {
-    display: block; font-family: 'Instrument Serif', serif;
-    font-size: 1.5rem; color: var(--blue);
-  }
-  .q-metric span { font-size: .72rem; color: var(--mid); }
-
-  /* ── CLIENTS ── */
-  .clients {
-    padding: 64px; border-bottom: 1px solid var(--border);
-    text-align: center;
-  }
-  .clients-eyebrow {
-    font-family: 'Geist Mono', monospace; font-size: .62rem; letter-spacing: .12em;
-    color: var(--light); margin-bottom: 40px;
-  }
-  .clients-row {
-    display: flex; gap: 56px; align-items: center; justify-content: center; flex-wrap: wrap;
-  }
-  .client-name {
-    font-size: .82rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--light); transition: color .2s;
-  }
-  .client-name:hover { color: var(--ink); }
-
-  /* ── ANIMATIONS ── */
-  @keyframes rise { from { opacity:0; transform: translateY(24px); } to { opacity:1; transform: translateY(0); } }
-  .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
-  .reveal.in { opacity: 1; transform: translateY(0); }
-</style>
-</head>
-<body>
-
-<div class="cursor">
-  <div class="c-dot" id="cDot"></div>
-  <div class="c-ring" id="cRing"></div>
-</div>
-
-<!-- NAV -->
-<nav id="mainNav">
-  <a class="nav-logo" href="#"><span class="nav-logo-dot"></span>Odiseus <em class="nav-logo-talent">Talent</em></a>
-
-  <ul class="nav-center" id="navMenu" role="list">
-    <li><a href="#specialisms">Specialisms</a></li>
-    <li><a href="#roles">Open Roles</a></li>
-    <li><a href="#why">Why Odiseus</a></li>
-    <li><a href="#process">Process</a></li>
-    <li><a href="#market">Market Intel</a></li>
-    <!-- Mobile-only CTA inside drawer -->
-    <li class="nav-drawer-cta">
-      <a href="#cta" class="nav-drawer-btn">Work With Us <span aria-hidden="true">→</span></a>
-    </li>
-  </ul>
-
-  <div class="nav-right">
-    <span class="nav-tag">DevOps · Cloud · AI</span>
-    <a href="#cta" class="nav-cta">Work With Us</a>
-  </div>
-
-  <button class="nav-hamburger" id="navToggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navMenu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
-
-<!-- HERO -->
-<section class="hero" id="home">
-  <div class="hero-body">
-    <div class="hero-pill">
-      <div class="pill-dot"></div>
-      <span class="pill-text">LONDON, ONTARIO · TECH TALENT SPECIALISTS · SINCE 2019</span>
-    </div>
-    <h1 class="hero-h1">
-      The engineers who build<br />tomorrow's <span id="cycleWord" class="italic">Cloud</span><br />— found.
-    </h1>
-    <p class="hero-sub">
-      Odiseus Talent connects DevOps, Cloud, and AI engineers with
-      companies building the future — in Canada, USA and beyond.
-    </p>
-    <div class="hero-ctas">
-      <a href="#roles" class="btn-dark">Browse Open Roles</a>
-      <a href="#specialisms" class="btn-outline">Our Specialisms</a>
-    </div>
-  </div>
-
-  <div class="hero-stats">
-    <div class="hstat">
-      <div class="hstat-num"><span>187</span>+</div>
-      <div class="hstat-label">Tech placements made</div>
-      <div class="hstat-mono">// since 2021</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-num"><span>12</span>w</div>
-      <div class="hstat-label">Average time-to-offer</div>
-      <div class="hstat-mono">// industry avg: 42d</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-num"><span>92</span>%</div>
-      <div class="hstat-label">6-month retention</div>
-      <div class="hstat-mono">// roles filled</div>
-    </div>
-    <div class="hstat">
-      <div class="hstat-num"><span>140</span>+</div>
-      <div class="hstat-label">Tech clients</div>
-      <div class="hstat-mono">// active partners</div>
-    </div>
-  </div>
-</section>
-
-<!-- TICKER -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-inner">
-    <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Platform Engineer</span>
-    <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> AWS Solutions Architect</span>
-    <span class="ticker-item"><span class="tag tag-ai">AI</span> ML Engineer — RAG &amp; LLMs</span>
-    <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Site Reliability Engineer</span>
-    <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> GCP Infrastructure Lead</span>
-    <span class="ticker-item"><span class="tag tag-ai">AI</span> LLMOps Specialist</span>
-    <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Kubernetes Engineer</span>
-    <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> Azure Architect</span>
-    <span class="ticker-item"><span class="tag tag-ai">AI</span> Data Scientist</span>
-    <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Platform Engineer</span>
-    <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> AWS Solutions Architect</span>
-    <span class="ticker-item"><span class="tag tag-ai">AI</span> ML Engineer — RAG &amp; LLMs</span>
-    <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Site Reliability Engineer</span>
-    <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> GCP Infrastructure Lead</span>
-    <span class="ticker-item"><span class="tag tag-ai">AI</span> LLMOps Specialist</span>
-    <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Kubernetes Engineer</span>
-    <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> Azure Architect</span>
-    <span class="ticker-item"><span class="tag tag-ai">AI</span> Data Scientist</span>
-  </div>
-</div>
-
-<!-- MARKET INTELLIGENCE -->
-<section class="market" id="market">
-  <div class="market-head reveal">
-    <div class="eyebrow">// MARKET_DEMAND_REPORT</div>
-    <h2 class="market-h2">Where the talent market<br /><em>is moving.</em></h2>
-  </div>
-
-  <!-- TIER 1 -->
-  <div class="market-tier reveal">
-    <div class="tier-label tier-label--hot">TIER 1 — HOTTEST DEMAND</div>
-    <div class="demand-grid">
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--hot">Hottest demand</span>
-        <div class="demand-role">Cybersecurity Engineer / Analyst</div>
-        <p class="demand-stat">11.2% CAGR — 1 in 3 digital transformation projects is a security initiative</p>
-        <div class="demand-skills">
-          <span class="spec-tag">CISSP</span>
-          <span class="spec-tag">CCNP</span>
-          <span class="spec-tag">Cloud security</span>
-          <span class="spec-tag">Zero Trust</span>
-          <span class="spec-tag">SIEM/SOAR</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $83K–$140K</div>
-      </div>
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--hot">Hottest demand</span>
-        <div class="demand-role">AI / ML Engineer</div>
-        <p class="demand-stat">37% surge in demand since 2018 — Vector, Mila, Amii driving ecosystem</p>
-        <div class="demand-skills">
-          <span class="spec-tag">PyTorch</span>
-          <span class="spec-tag">LLM fine-tuning</span>
-          <span class="spec-tag">MLOps</span>
-          <span class="spec-tag">Python</span>
-          <span class="spec-tag">RAG</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $116K–$190K</div>
-      </div>
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--hot">Hottest demand</span>
-        <div class="demand-role">Cloud Engineer / Architect</div>
-        <p class="demand-stat">Cloud adoption accelerating across all Canadian industries — sector grows ~15% annually</p>
-        <div class="demand-skills">
-          <span class="spec-tag">AWS</span>
-          <span class="spec-tag">Azure</span>
-          <span class="spec-tag">Terraform</span>
-          <span class="spec-tag">GCP</span>
-          <span class="spec-tag">FinOps</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $100K–$160K</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TIER 2 -->
-  <div class="market-tier reveal">
-    <div class="tier-label tier-label--growing">TIER 2 — STRONG, CONSISTENT ORGANIC HIRING</div>
-    <div class="demand-grid">
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--growing">Growing</span>
-        <div class="demand-role">DevOps / Platform Engineer</div>
-        <p class="demand-stat">Demand driven by digital transformation programs — CI/CD, IaC skills critical</p>
-        <div class="demand-skills">
-          <span class="spec-tag">Kubernetes</span>
-          <span class="spec-tag">CI/CD</span>
-          <span class="spec-tag">GitHub Actions</span>
-          <span class="spec-tag">Ansible</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $90K–$145K</div>
-      </div>
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--growing">Growing</span>
-        <div class="demand-role">Data Scientist / Data Engineer</div>
-        <p class="demand-stat">Fastest-growing category — analytics and ML pipelines in demand across every vertical</p>
-        <div class="demand-skills">
-          <span class="spec-tag">SQL</span>
-          <span class="spec-tag">Spark</span>
-          <span class="spec-tag">dbt</span>
-          <span class="spec-tag">Tableau</span>
-          <span class="spec-tag">Python</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $85K–$140K</div>
-      </div>
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--growing">Growing</span>
-        <div class="demand-role">Solutions Architect</div>
-        <p class="demand-stat">98% of IT departments have active transformation initiatives — architects needed to design them</p>
-        <div class="demand-skills">
-          <span class="spec-tag">TOGAF</span>
-          <span class="spec-tag">AWS SA cert</span>
-          <span class="spec-tag">Microservices</span>
-          <span class="spec-tag">API design</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $110K–$170K</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TIER 3 -->
-  <div class="market-tier reveal">
-    <div class="tier-label tier-label--steady">TIER 3 — STABLE, SPECIALIST NICHES</div>
-    <div class="demand-grid">
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--steady">Steady</span>
-        <div class="demand-role">Software Engineer (Full-stack / Backend)</div>
-        <p class="demand-stat">JavaScript, Golang, R — healthcare, fintech, gaming specializations most sought</p>
-        <div class="demand-skills">
-          <span class="spec-tag">Node.js</span>
-          <span class="spec-tag">React</span>
-          <span class="spec-tag">Golang</span>
-          <span class="spec-tag">Microservices</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $80K–$135K</div>
-      </div>
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--steady">Steady</span>
-        <div class="demand-role">Business Systems Analyst</div>
-        <p class="demand-stat">Bridge between tech and business — rising demand as AI/cloud projects need translators</p>
-        <div class="demand-skills">
-          <span class="spec-tag">SQL</span>
-          <span class="spec-tag">Tableau</span>
-          <span class="spec-tag">Agile</span>
-          <span class="spec-tag">Stakeholder mgmt</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $70K–$110K</div>
-      </div>
-      <div class="demand-card">
-        <span class="demand-badge demand-badge--steady">Steady</span>
-        <div class="demand-role">IT Support / Infrastructure</div>
-        <p class="demand-stat">Bedrock of tech — consistent demand especially as cloud migration projects ramp up</p>
-        <div class="demand-skills">
-          <span class="spec-tag">CompTIA A+</span>
-          <span class="spec-tag">CCNP</span>
-          <span class="spec-tag">Azure AD</span>
-        </div>
-        <div class="demand-salary"><span>Salary range</span>CAD $50K–$85K</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SPECIALISMS -->
-<section class="specialisms" id="specialisms">
-  <div class="spec-header reveal">
-    <div>
-      <div class="eyebrow">// OUR_SPECIALISMS</div>
-      <h2 class="spec-h2">Three domains.<br /><em>Deep expertise.</em></h2>
-    </div>
-  </div>
-  <div class="spec-grid reveal">
-    <div class="spec-card">
-      <div class="spec-icon">⚙️</div>
-      <div class="spec-title">DevOps & Platform</div>
-      <p class="spec-body">From CI/CD pipelines to internal developer platforms, we place the engineers who keep software shipping fast and reliably. We know the toolchain inside out.</p>
-      <div class="spec-tags">
-        <span class="spec-tag">Kubernetes</span>
-        <span class="spec-tag">Terraform</span>
-        <span class="spec-tag">GitHub Actions</span>
-        <span class="spec-tag">ArgoCD</span>
-        <span class="spec-tag">Helm</span>
-        <span class="spec-tag">SRE</span>
-        <span class="spec-tag">Platform Eng</span>
-      </div>
-    </div>
-    <div class="spec-card">
-      <div class="spec-icon">☁️</div>
-      <div class="spec-title">Cloud Infrastructure</div>
-      <p class="spec-body">Multi-cloud architects, FinOps specialists, and cloud-native engineers for AWS, GCP, and Azure — from individual contributors to cloud centre-of-excellence leads.</p>
-      <div class="spec-tags">
-        <span class="spec-tag">AWS</span>
-        <span class="spec-tag">GCP</span>
-        <span class="spec-tag">Azure</span>
-        <span class="spec-tag">FinOps</span>
-        <span class="spec-tag">Cloud Security</span>
-        <span class="spec-tag">IaC</span>
-      </div>
-    </div>
-    <div class="spec-card">
-      <div class="spec-icon">🧠</div>
-      <div class="spec-title">AI & Machine Learning</div>
-      <p class="spec-body">ML Engineers, MLOps, LLM specialists, and AI Product Managers. We understand the full stack from model training to production inference and RAG pipelines.</p>
-      <div class="spec-tags">
-        <span class="spec-tag">PyTorch</span>
-        <span class="spec-tag">MLflow</span>
-        <span class="spec-tag">LangChain</span>
-        <span class="spec-tag">Vertex AI</span>
-        <span class="spec-tag">SageMaker</span>
-        <span class="spec-tag">RAG</span>
-        <span class="spec-tag">LLMOps</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- OPEN ROLES -->
-<section class="roles" id="roles">
-  <div class="roles-head reveal">
-    <div>
-      <div class="eyebrow">// ACTIVE_SEARCHES</div>
-      <h2 class="roles-h2">Featured <em>open roles.</em></h2>
-    </div>
-    <div class="roles-filters">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">DevOps</button>
-      <button class="filter-btn">Cloud</button>
-      <button class="filter-btn">AI</button>
-    </div>
-  </div>
-  <div class="roles-list reveal">
-    <div class="role-row">
-      <span class="role-badge badge-devops">DevOps</span>
-      <div class="role-info">
-        <div class="role-title-text">Senior Platform Engineer</div>
-        <div class="role-co">FinTech Scale-up · Series C</div>
-      </div>
-      <div class="role-meta">
-        <div class="role-loc">New York, NY (Hybrid)</div>
-        <div class="role-sal">$145–175K CAD</div>
-        <div class="role-arrow">→</div>
-      </div>
-    </div>
-    <div class="role-row">
-      <span class="role-badge badge-ai">AI</span>
-      <div class="role-info">
-        <div class="role-title-text">ML Engineer — LLM &amp; RAG</div>
-        <div class="role-co">AI Product Company · San Francisco</div>
-      </div>
-      <div class="role-meta">
-        <div class="role-loc">Remote-Friendly (US / Canada)</div>
-        <div class="role-sal">$155–195K CAD</div>
-        <div class="role-arrow">→</div>
-      </div>
-    </div>
-    <div class="role-row">
-      <span class="role-badge badge-cloud">Cloud</span>
-      <div class="role-info">
-        <div class="role-title-text">AWS Solutions Architect</div>
-        <div class="role-co">Enterprise Retail · Seattle</div>
-      </div>
-      <div class="role-meta">
-        <div class="role-loc">Seattle, WA (Onsite)</div>
-        <div class="role-sal">$160–190K CAD</div>
-        <div class="role-arrow">→</div>
-      </div>
-    </div>
-    <div class="role-row">
-      <span class="role-badge badge-devops">DevOps</span>
-      <div class="role-info">
-        <div class="role-title-text">Site Reliability Engineer (SRE)</div>
-        <div class="role-co">Banking Platform · New York</div>
-      </div>
-      <div class="role-meta">
-        <div class="role-loc">Austin, TX (Hybrid)</div>
-        <div class="role-sal">$140–170K CAD</div>
-        <div class="role-arrow">→</div>
-      </div>
-    </div>
-    <div class="role-row">
-      <span class="role-badge badge-ai">AI</span>
-      <div class="role-info">
-        <div class="role-title-text">Director of AI Engineering</div>
-        <div class="role-co">Health-Tech Startup · Chicago</div>
-      </div>
-      <div class="role-meta">
-        <div class="role-loc">Chicago, IL</div>
-        <div class="role-sal">$200–240K CAD</div>
-        <div class="role-arrow">→</div>
-      </div>
-    </div>
-    <div class="role-row">
-      <span class="role-badge badge-cloud">Cloud</span>
-      <div class="role-info">
-        <div class="role-title-text">FinOps &amp; Cloud Cost Strategist</div>
-        <div class="role-co">Multi-cloud Enterprise · Remote</div>
-      </div>
-      <div class="role-meta">
-        <div class="role-loc">Hybrid · Remote</div>
-        <div class="role-sal">$130–155K CAD</div>
-        <div class="role-arrow">→</div>
-      </div>
-    </div>
-  </div>
-  <div class="see-all">
-    <a href="#cta">Sign up to browse all 38+ open roles</a>
-  </div>
-</section>
-
-<!-- WHY US -->
-<section class="why" id="why">
-  <div class="why-content reveal">
-    <div class="eyebrow">// WHY_ODISEUS</div>
-    <h2 class="why-h2">We speak <em>engineer,</em><br />not just recruiter.</h2>
-    <p class="why-p">We're active in AI communities and university ecosystems identifying rising talent before they even hit the job market. Our strength lies in career advisory: we know how to shape candidates to meet employer expectations, not just match job descriptions. Now we're bringing that same expertise to employers, ready to fill their open positions with pre-vetted, growth-oriented talent.</p>
-    <div class="why-items">
-      <div class="why-item">
-        <div class="why-icon">🎯</div>
-        <div class="why-item-text">
-          <strong>Specialist Networks Only</strong>
-          <span>Our talent pools are mapped specifically to cloud-native and AI engineering communities — no generalist noise.</span>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">⚡</div>
-        <div class="why-item-text">
-          <strong>12-Week Average to Offer</strong>
-          <span>Speed matters in a competitive market. Our process is built to move fast without sacrificing quality or fit.</span>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">🔁</div>
-        <div class="why-item-text">
-          <strong>90-Day Guarantee</strong>
-          <span>If a placed candidate leaves within 90 days for any reason, we replace at no additional cost — no questions asked.</span>
-        </div>
-      </div>
-      <div class="why-item">
-        <div class="why-icon">📍</div>
-        <div class="why-item-text">
-          <strong>London, ON HQ — North America Reach</strong>
-          <span>Headquartered in London, Ontario with active candidate pipelines across Canada, the US, and offshore — built for speed and reach.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- PROCESS -->
-<section class="process" id="process">
-  <div class="process-head reveal">
-    <div class="eyebrow">// HOW_IT_WORKS</div>
-    <h2 class="process-h2">Built for speed.<br /><em>Optimised for fit.</em></h2>
-  </div>
-  <div class="process-steps reveal">
-    <div class="p-step" data-num="01">
-      <div class="p-step-num">01 / BRIEF</div>
-      <div class="p-step-title">Technical Discovery</div>
-      <div class="p-step-body">We go deep on your stack, team culture, and growth roadmap. We write the brief with you — not at you — so every search starts with full alignment.</div>
-    </div>
-    <div class="p-step" data-num="02">
-      <div class="p-step-num">02 / SEARCH</div>
-      <div class="p-step-title">Targeted Outreach</div>
-      <div class="p-step-body">We tap our specialist networks and reach passively-employed engineers who will never respond to a LinkedIn InMail. We know where the best people are.</div>
-    </div>
-    <div class="p-step" data-num="03">
-      <div class="p-step-num">03 / SHORTLIST</div>
-      <div class="p-step-title">Curated Slate</div>
-      <div class="p-step-body">A handpicked shortlist of 3–5 candidates with detailed scorecards, technical assessments, and our honest read. No padding, no filler.</div>
-    </div>
-    <div class="p-step" data-num="04">
-      <div class="p-step-num">04 / CLOSE</div>
-      <div class="p-step-title">Offer &amp; Onboard</div>
-      <div class="p-step-body">We manage compensation negotiations, references, and stay engaged through the first 90 days. Your new hire lands with context and momentum.</div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIAL -->
-<section class="testimonial" id="testimonial">
-  <div class="reveal">
-    <div class="eyebrow">// CLIENT_STORY</div>
-    <h2 class="testi-h2">When the right hire<br /><em>changes everything.</em></h2>
-    <p class="testi-p">Our clients come to us when they need engineers who are genuinely hard to find — and they stay because we find them.</p>
-  </div>
-  <div class="quote-wrap reveal">
-    <p class="q-text">
-      Odiseus placed our entire DevOps team — five engineers in under two months. They understood Kubernetes and GitOps better than most engineers I've interviewed. This wasn't a recruiter, it was a technical partner.
-    </p>
-    <div class="q-author">
-      <div class="q-avatar">R</div>
-      <div>
-        <div class="q-name">Rohan Mehta</div>
-        <div class="q-role">VP Engineering · Covalent Labs, Toronto</div>
-      </div>
-    </div>
-    <div class="q-rating">
-      <div class="q-metric"><strong>5</strong><span>engineers placed</span></div>
-      <div class="q-metric"><strong>52d</strong><span>total timeline</span></div>
-      <div class="q-metric"><strong>100%</strong><span>still at company</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- CLIENTS -->
-<!-- <div class="clients reveal">
-  <div class="clients-eyebrow">// TRUSTED_BY_LEADING_GTA_TECH_ORGANIZATIONS</div>
-  <div class="clients-row">
-    <span class="client-name">Shopify</span>
-    <span class="client-name">Wealthsimple</span>
-    <span class="client-name">D2L</span>
-    <span class="client-name">Caseware</span>
-    <span class="client-name">Benevity</span>
-    <span class="client-name">Ritual</span>
-    <span class="client-name">Nudge.ai</span>
-  </div>
-</div> -->
-
-<!-- CTA -->
-<section class="cta-section" id="cta">
-  <div class="cta-blob"></div>
-  <div class="eyebrow">// LET'S_BUILD_TOGETHER</div>
-  <h2 class="cta-h2">
-    Find the engineer<br /><em>you can't find yourself.</em>
-  </h2>
-  <p class="cta-p">
-    Whether you're scaling a platform team or finding a singular AI architect,
-    we'd love to hear your challenge.
-  </p>
-  <div class="cta-btns">
-    <a href="mailto:info@odiseussoftware.com" class="btn-dark">Start a Conversation</a>
-    <a href="#roles" class="btn-outline">Browse Roles</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-top">
-
-    <!-- Brand column -->
-    <div>
-      <div class="f-logo"><span class="nav-logo-dot"></span>Odiseus Talent</div>
-      <p class="f-tagline">Recruitment partner for DevOps, Cloud Infrastructure, and AI engineering.</p>
-
-      <div class="f-office-label">CANADA — HEAD OFFICE</div>
-      <div class="f-address">
-        3392 Wonderland Rd S<br />
-        London, ON N6L 1A8, Canada<br />
-        info@odiseussoftware.com<br />
-      </div>
-
-      <div class="f-office-label">OFFSHORE — HYDERABAD, INDIA</div>
-      <div class="f-address">
-        <a href="https://share.google/aK4hTZOT1GE1kHdbS" target="_blank" rel="noopener noreferrer">
-          3rd Floor, Alcazar Mall, Plot No. 498,<br />
-          Road No. 36, Venkatagiri,<br />
-          Jubilee Hills, Hyderabad,<br />
-          Telangana 500033
-        </a>
-      </div>
-    </div>
-
-    <!-- Specialisms -->
-    <div class="f-col">
-      <h4>SPECIALISMS</h4>
-      <ul>
-        <li><a href="#">DevOps &amp; Platform</a></li>
-        <li><a href="#">Cloud Infrastructure</a></li>
-        <li><a href="#">AI &amp; Machine Learning</a></li>
-        <li><a href="#">MLOps &amp; LLMOps</a></li>
-        <li><a href="#">Cloud Security</a></li>
-      </ul>
-    </div>
-
-    <!-- Company -->
-    <div class="f-col">
-      <h4>COMPANY</h4>
-      <ul>
-        <li><a href="#">About Odiseus</a></li>
-        <li><a href="#">Our Team</a></li>
-        <li><a href="#">Client Stories</a></li>
-        <li><a href="#">Careers</a></li>
-      </ul>
-    </div>
-
-    <!-- Candidates -->
-    <div class="f-col">
-      <h4>FOR CANDIDATES</h4>
-      <ul>
-        <li><a href="#">Open Roles</a></li>
-        <li><a href="#">Submit Your CV</a></li>
-        <li><a href="#">Salary Benchmarks</a></li>
-        <li><a href="#">Career Advice</a></li>
-        <li><a href="#">Tech Interview Prep</a></li>
-      </ul>
-    </div>
-
-  </div>
-  <div class="footer-bottom">
-    <span class="f-copy">© 2026 ODISEUS TALENT INC · LONDON, ONTARIO · ALL RIGHTS RESERVED</span>
-    <div class="f-socials">
-      <a href="https://www.linkedin.com/company/odiseussoftware" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-      <a href="#">Twitter / X</a>
-      <a href="#">Privacy Policy</a>
-    </div>
-  </div>
-</footer>
-
-<script src="main.js"></script>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  // Custom cursor
-  const dot = document.getElementById('cDot');
-  const ring = document.getElementById('cRing');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
-  (function ani(){
-    rx+=(mx-rx)*.13; ry+=(my-ry)*.13;
-    dot.style.left=mx+'px'; dot.style.top=my+'px';
-    ring.style.left=rx+'px'; ring.style.top=ry+'px';
-    requestAnimationFrame(ani);
-  })();
-
-  // Filter buttons (visual only)
-  document.querySelectorAll('.filter-btn').forEach(btn=>{
-    btn.addEventListener('click',()=>{
-      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-
-  // Scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Odiseus — Canadian Consulting in DevOps, Cloud, AI & Business Analysis
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --ink: #0a0a0f;
+        --ink-soft: #1a1a22;
+        --paper: #fafaf7;
+        --paper-warm: #f2efe8;
+        --rule: #e5e2da;
+        --blue: #1a4eff;
+        --blue-soft: #e8edff;
+        --muted: #6b6b6b;
+        --canada: #dc2626;
       }
-    });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-</script>
-</body>
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Geist", sans-serif;
+        background: var(--paper);
+        color: var(--ink);
+        font-weight: 400;
+        line-height: 1.5;
+        overflow-x: hidden;
+      }
+
+      .mono {
+        font-family: "Geist Mono", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .serif {
+        font-family: "Instrument Serif", serif;
+        font-weight: 400;
+      }
+
+      /* ─── NAV ─── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 1.4rem 2.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(250, 250, 247, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--rule);
+        z-index: 100;
+      }
+      .logo {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.5rem;
+        letter-spacing: -0.01em;
+      }
+      .logo em {
+        color: var(--blue);
+        font-style: italic;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+      }
+      .nav-links a {
+        color: var(--ink);
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--blue);
+      }
+      .pill {
+        padding: 0.55rem 1.1rem;
+        border: 1px solid var(--ink);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        transition: all 0.2s;
+      }
+      .pill:hover {
+        background: var(--ink);
+        color: var(--paper);
+      }
+
+      /* ─── HERO ─── */
+      .hero {
+        padding: 9rem 2.5rem 5rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--blue);
+        margin-bottom: 1.8rem;
+      }
+      .eyebrow .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--blue);
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(1.4);
+        }
+      }
+      h1 {
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2.8rem, 6vw, 5.2rem);
+        font-weight: 400;
+        line-height: 0.98;
+        letter-spacing: -0.025em;
+        margin-bottom: 1.8rem;
+      }
+      h1 em {
+        font-style: italic;
+        color: var(--blue);
+      }
+      h1 .strike {
+        position: relative;
+        display: inline-block;
+      }
+      .hero-sub {
+        font-size: 1.05rem;
+        color: var(--muted);
+        max-width: 460px;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+      }
+      .hero-meta {
+        display: flex;
+        gap: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--rule);
+      }
+      .meta-item .label {
+        color: var(--muted);
+        margin-bottom: 0.4rem;
+      }
+      .meta-item .value {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.6rem;
+      }
+
+      /* ─── HERO ILLUSTRATION ─── */
+      .illustration {
+        position: relative;
+        aspect-ratio: 1.05/1;
+        background: var(--ink);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px -20px rgba(10, 10, 15, 0.35);
+      }
+      .illustration svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      /* Map node pulsing */
+      .node-pulse {
+        animation: nodePulse 2.4s ease-out infinite;
+        transform-origin: center;
+        transform-box: fill-box;
+      }
+      .node-pulse-2 {
+        animation-delay: 0.6s;
+      }
+      .node-pulse-3 {
+        animation-delay: 1.2s;
+      }
+      .node-pulse-4 {
+        animation-delay: 1.8s;
+      }
+      @keyframes nodePulse {
+        0% {
+          r: 4;
+          opacity: 0.9;
+        }
+        100% {
+          r: 28;
+          opacity: 0;
+        }
+      }
+
+      .line-draw {
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        animation: drawLine 2.5s ease-out forwards;
+      }
+      .line-draw-2 {
+        animation-delay: 0.4s;
+      }
+      .line-draw-3 {
+        animation-delay: 0.8s;
+      }
+      .line-draw-4 {
+        animation-delay: 1.2s;
+      }
+      @keyframes drawLine {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .illustration-caption {
+        position: absolute;
+        left: 1.5rem;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        color: var(--paper);
+        pointer-events: none;
+      }
+      .illustration-caption .mono {
+        color: rgba(250, 250, 247, 0.55);
+      }
+      .illustration-caption .num {
+        font-family: "Instrument Serif", serif;
+        font-size: 2rem;
+        line-height: 1;
+      }
+      .illustration-caption .num em {
+        color: var(--blue);
+        font-style: italic;
+      }
+
+      /* ─── MARQUEE STRIP ─── */
+      .strip {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 1.4rem 0;
+        overflow: hidden;
+        border-top: 1px solid var(--ink);
+        border-bottom: 1px solid var(--ink);
+      }
+      .strip-inner {
+        display: flex;
+        gap: 3.5rem;
+        white-space: nowrap;
+        animation: scroll 35s linear infinite;
+      }
+      .strip-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.95rem;
+      }
+      .strip-item .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--blue);
+        flex: none;
+      }
+      .strip-item .city {
+        font-family: "Instrument Serif", serif;
+        font-style: italic;
+        color: var(--blue);
+      }
+      @keyframes scroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ─── SPECIALIZATIONS ─── */
+      .specs {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 6rem 2.5rem;
+      }
+      .section-head {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 3rem;
+        margin-bottom: 4rem;
+        align-items: end;
+      }
+      .section-head h2 {
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2rem, 4vw, 3.4rem);
+        font-weight: 400;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+      }
+      .section-head h2 em {
+        color: var(--blue);
+      }
+      .section-head p {
+        color: var(--muted);
+        font-size: 1rem;
+        max-width: 440px;
+      }
+
+      .spec-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        background: var(--rule);
+        border: 1px solid var(--rule);
+      }
+      .spec {
+        background: var(--paper);
+        padding: 2.2rem 1.8rem;
+        display: flex;
+        flex-direction: column;
+        min-height: 380px;
+        transition: background 0.3s;
+        cursor: default;
+      }
+      .spec:hover {
+        background: var(--paper-warm);
+      }
+      .spec .num {
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+      }
+      .spec .glyph {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 1.8rem;
+        color: var(--ink);
+        transition:
+          color 0.3s,
+          transform 0.4s;
+      }
+      .spec:hover .glyph {
+        color: var(--blue);
+        transform: rotate(-4deg) scale(1.05);
+      }
+      .spec h3 {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.7rem;
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: -0.015em;
+        margin-bottom: 0.8rem;
+      }
+      .spec h3 em {
+        color: var(--blue);
+      }
+      .spec p {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.55;
+        flex: 1;
+      }
+      .spec .tag {
+        margin-top: 1.5rem;
+        color: var(--blue);
+      }
+
+      /* ─── NETWORK STATS ─── */
+      .network {
+        background: var(--paper-warm);
+        padding: 6rem 2.5rem;
+        border-top: 1px solid var(--rule);
+        border-bottom: 1px solid var(--rule);
+      }
+      .network-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .network h2 {
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2.2rem, 4.5vw, 4rem);
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        margin-bottom: 4rem;
+        max-width: 14ch;
+      }
+      .network h2 em {
+        color: var(--blue);
+        font-style: italic;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+      }
+      .stat {
+        border-top: 1px solid var(--ink);
+        padding-top: 1.5rem;
+      }
+      .stat .num {
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2.4rem, 4vw, 3.6rem);
+        line-height: 1;
+        margin-bottom: 0.6rem;
+      }
+      .stat .num em {
+        color: var(--blue);
+        font-style: italic;
+      }
+      .stat .label {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      /* ─── CTA ─── */
+      .cta {
+        padding: 7rem 2.5rem;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .cta h2 {
+        font-family: "Instrument Serif", serif;
+        font-size: clamp(2.4rem, 5vw, 4.2rem);
+        font-weight: 400;
+        line-height: 1.02;
+        letter-spacing: -0.025em;
+        margin-bottom: 2rem;
+      }
+      .cta h2 em {
+        color: var(--blue);
+        font-style: italic;
+      }
+      .cta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        background: var(--ink);
+        color: var(--paper);
+        padding: 1rem 1.8rem;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 0.92rem;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+      .cta-btn:hover {
+        background: var(--blue);
+        transform: translateY(-2px);
+      }
+      .cta-btn .arrow {
+        transition: transform 0.3s;
+      }
+      .cta-btn:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      /* ─── FOOTER ─── */
+      footer {
+        background: var(--ink);
+        color: var(--paper);
+        padding: 4rem 2.5rem 2rem;
+      }
+      .footer-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        gap: 3rem;
+      }
+      .footer-inner h4 {
+        font-family: "Instrument Serif", serif;
+        font-size: 1.3rem;
+        font-weight: 400;
+        margin-bottom: 1rem;
+      }
+      .footer-inner h4 em {
+        color: var(--blue);
+      }
+      .footer-inner p,
+      .footer-inner a {
+        color: rgba(250, 250, 247, 0.65);
+        font-size: 0.88rem;
+        line-height: 1.65;
+        text-decoration: none;
+      }
+      .footer-inner a:hover {
+        color: var(--blue);
+      }
+      .footer-inner .col-title {
+        color: var(--paper);
+        margin-bottom: 1.2rem;
+      }
+      .footer-bottom {
+        max-width: 1400px;
+        margin: 4rem auto 0;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(250, 250, 247, 0.1);
+        display: flex;
+        justify-content: space-between;
+        color: rgba(250, 250, 247, 0.4);
+      }
+
+      /* ─── ENTRANCE ANIMATIONS ─── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        animation: reveal 0.9s ease-out forwards;
+      }
+      .reveal-1 {
+        animation-delay: 0.1s;
+      }
+      .reveal-2 {
+        animation-delay: 0.25s;
+      }
+      .reveal-3 {
+        animation-delay: 0.4s;
+      }
+      .reveal-4 {
+        animation-delay: 0.55s;
+      }
+      @keyframes reveal {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 900px) {
+        .hero {
+          grid-template-columns: 1fr;
+          padding-top: 7rem;
+          gap: 3rem;
+        }
+        .section-head {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        .spec-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .footer-inner {
+          grid-template-columns: 1fr;
+        }
+        .nav-links {
+          display: flex;
+          gap: 1rem;
+        }
+        .nav-links a.active {
+          color: var(--blue);
+        }
+        .nav-links a {
+          font-size: 0.78rem;
+        }
+        .pill {
+          display: none;
+        }
+        .hero-meta {
+          gap: 1.5rem;
+          flex-wrap: wrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ─── NAV ─── -->
+    <nav>
+      <div class="logo">odiseus<em>.</em></div>
+      <div class="nav-links">
+        <a href="/" class="active">Software</a>
+        <a href="/talent.html">Talent</a>
+      </div>
+      <a href="#contact" class="pill">Start a conversation</a>
+    </nav>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero">
+      <div>
+        <div class="eyebrow mono reveal reveal-1">
+          <span class="dot"></span>
+          Canadian consulting · est. London, ON
+        </div>
+        <h1 class="reveal reveal-2">
+          The network<br />
+          behind Canada's<br />
+          <em>most ambitious</em><br />
+          engineering teams.
+        </h1>
+        <p class="hero-sub reveal reveal-3">
+          Odiseus is a boutique consulting practice connecting Canadian
+          enterprises with deep expertise in DevOps, Cloud, AI, and business
+          analysis — backed by a coast-to-coast network of senior practitioners.
+        </p>
+        <div class="hero-meta reveal reveal-4">
+          <div class="meta-item">
+            <div class="label mono">Headquarters</div>
+            <div class="value">London, ON</div>
+          </div>
+          <div class="meta-item">
+            <div class="label mono">Network reach</div>
+            <div class="value">Coast to coast</div>
+          </div>
+          <div class="meta-item">
+            <div class="label mono">Practice areas</div>
+            <div class="value">Four</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── HERO ILLUSTRATION: CANADIAN NETWORK MAP ─── -->
+      <div class="illustration reveal reveal-2">
+        <svg viewBox="0 0 600 580" xmlns="http://www.w3.org/2000/svg">
+          <!-- Background grid -->
+          <defs>
+            <pattern
+              id="grid"
+              width="40"
+              height="40"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M 40 0 L 0 0 0 40"
+                fill="none"
+                stroke="rgba(255,255,255,0.04)"
+                stroke-width="1"
+              />
+            </pattern>
+            <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#1A4EFF" stop-opacity="0.4" />
+              <stop offset="100%" stop-color="#1A4EFF" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <rect width="600" height="580" fill="url(#grid)" />
+
+          <!-- Atmospheric glow -->
+          <circle cx="300" cy="280" r="200" fill="url(#glow)" />
+
+          <!-- Stylized Canada outline (simplified) -->
+          <path
+            d="
+        M 60 240
+        L 90 200 L 130 195 L 160 175 L 200 170 L 230 155
+        L 270 145 L 310 140 L 350 145 L 400 155 L 440 165
+        L 480 175 L 520 195 L 540 220 L 530 250
+        L 525 270 L 510 290 L 490 305 L 480 330
+        L 475 360 L 470 385 L 460 405 L 440 415
+        L 415 425 L 390 432 L 360 438 L 330 442
+        L 300 444 L 270 442 L 245 438 L 220 432
+        L 195 425 L 175 418 L 160 408 L 145 395
+        L 130 378 L 115 358 L 100 335 L 85 310
+        L 75 285 L 65 260 Z"
+            fill="rgba(255,255,255,0.04)"
+            stroke="rgba(255,255,255,0.18)"
+            stroke-width="1"
+          />
+
+          <!-- Connection lines between cities -->
+          <g stroke="#1A4EFF" stroke-width="1.2" fill="none" opacity="0.7">
+            <!-- Vancouver → Calgary -->
+            <line x1="110" y1="290" x2="220" y2="270" class="line-draw" />
+            <!-- Calgary → Toronto -->
+            <line
+              x1="220"
+              y1="270"
+              x2="380"
+              y2="330"
+              class="line-draw line-draw-2"
+            />
+            <!-- Toronto → London -->
+            <line
+              x1="380"
+              y1="330"
+              x2="365"
+              y2="345"
+              class="line-draw line-draw-2"
+            />
+            <!-- Toronto → Montreal -->
+            <line
+              x1="380"
+              y1="330"
+              x2="445"
+              y2="305"
+              class="line-draw line-draw-3"
+            />
+            <!-- Montreal → Halifax -->
+            <line
+              x1="445"
+              y1="305"
+              x2="510"
+              y2="290"
+              class="line-draw line-draw-4"
+            />
+            <!-- Toronto → Ottawa -->
+            <line
+              x1="380"
+              y1="330"
+              x2="420"
+              y2="310"
+              class="line-draw line-draw-3"
+            />
+          </g>
+
+          <!-- City: Vancouver -->
+          <g>
+            <circle
+              cx="110"
+              cy="290"
+              r="28"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse"
+            />
+            <circle cx="110" cy="290" r="5" fill="#1A4EFF" />
+            <circle cx="110" cy="290" r="2" fill="#FAFAF7" />
+            <text
+              x="110"
+              y="315"
+              text-anchor="middle"
+              fill="rgba(255,255,255,0.85)"
+              font-family="Geist Mono"
+              font-size="10"
+              letter-spacing="1"
+            >
+              VANCOUVER
+            </text>
+          </g>
+
+          <!-- City: Calgary -->
+          <g>
+            <circle
+              cx="220"
+              cy="270"
+              r="28"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse node-pulse-2"
+            />
+            <circle cx="220" cy="270" r="5" fill="#1A4EFF" />
+            <circle cx="220" cy="270" r="2" fill="#FAFAF7" />
+            <text
+              x="220"
+              y="295"
+              text-anchor="middle"
+              fill="rgba(255,255,255,0.85)"
+              font-family="Geist Mono"
+              font-size="10"
+              letter-spacing="1"
+            >
+              CALGARY
+            </text>
+          </g>
+
+          <!-- City: Toronto (HUB) -->
+          <g>
+            <circle
+              cx="380"
+              cy="330"
+              r="40"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse"
+            />
+            <circle cx="380" cy="330" r="8" fill="#1A4EFF" />
+            <circle cx="380" cy="330" r="3" fill="#FAFAF7" />
+            <text
+              x="380"
+              y="358"
+              text-anchor="middle"
+              fill="#1A4EFF"
+              font-family="Geist Mono"
+              font-size="11"
+              font-weight="500"
+              letter-spacing="1"
+            >
+              TORONTO
+            </text>
+          </g>
+
+          <!-- City: London ON (HQ) -->
+          <g>
+            <circle
+              cx="365"
+              cy="345"
+              r="32"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse node-pulse-3"
+            />
+            <circle cx="365" cy="345" r="6" fill="#FAFAF7" />
+            <circle cx="365" cy="345" r="3" fill="#1A4EFF" />
+            <text
+              x="365"
+              y="378"
+              text-anchor="middle"
+              fill="#FAFAF7"
+              font-family="Geist Mono"
+              font-size="9"
+              letter-spacing="1"
+            >
+              LONDON · HQ
+            </text>
+          </g>
+
+          <!-- City: Ottawa -->
+          <g>
+            <circle
+              cx="420"
+              cy="310"
+              r="22"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse node-pulse-4"
+            />
+            <circle cx="420" cy="310" r="4" fill="#1A4EFF" />
+            <text
+              x="420"
+              y="298"
+              text-anchor="middle"
+              fill="rgba(255,255,255,0.7)"
+              font-family="Geist Mono"
+              font-size="9"
+              letter-spacing="1"
+            >
+              OTTAWA
+            </text>
+          </g>
+
+          <!-- City: Montreal -->
+          <g>
+            <circle
+              cx="445"
+              cy="305"
+              r="28"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse node-pulse-2"
+            />
+            <circle cx="445" cy="305" r="5" fill="#1A4EFF" />
+            <circle cx="445" cy="305" r="2" fill="#FAFAF7" />
+            <text
+              x="465"
+              y="295"
+              text-anchor="start"
+              fill="rgba(255,255,255,0.85)"
+              font-family="Geist Mono"
+              font-size="10"
+              letter-spacing="1"
+            >
+              MONTRÉAL
+            </text>
+          </g>
+
+          <!-- City: Halifax -->
+          <g>
+            <circle
+              cx="510"
+              cy="290"
+              r="22"
+              fill="#1A4EFF"
+              opacity="0"
+              class="node-pulse node-pulse-3"
+            />
+            <circle cx="510" cy="290" r="4" fill="#1A4EFF" />
+            <text
+              x="510"
+              y="278"
+              text-anchor="middle"
+              fill="rgba(255,255,255,0.7)"
+              font-family="Geist Mono"
+              font-size="9"
+              letter-spacing="1"
+            >
+              HALIFAX
+            </text>
+          </g>
+
+          <!-- Compass / coordinate marker -->
+          <g transform="translate(50, 50)" opacity="0.4">
+            <circle r="14" fill="none" stroke="#FAFAF7" stroke-width="0.8" />
+            <line
+              x1="0"
+              y1="-14"
+              x2="0"
+              y2="14"
+              stroke="#FAFAF7"
+              stroke-width="0.6"
+            />
+            <line
+              x1="-14"
+              y1="0"
+              x2="14"
+              y2="0"
+              stroke="#FAFAF7"
+              stroke-width="0.6"
+            />
+            <text
+              y="-20"
+              text-anchor="middle"
+              fill="#FAFAF7"
+              font-family="Geist Mono"
+              font-size="8"
+            >
+              N
+            </text>
+          </g>
+        </svg>
+
+        <div class="illustration-caption">
+          <div>
+            <div class="mono">FIG. 01 · CONSULTING NETWORK</div>
+          </div>
+          <div class="num">07<em>+</em></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MARQUEE ─── -->
+    <div class="strip">
+      <div class="strip-inner">
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>DevOps in <span class="city">Toronto</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span
+            >Cloud architecture in <span class="city">Vancouver</span></span
+          >
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>AI strategy in <span class="city">Montréal</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>Business analysis in <span class="city">Calgary</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>Platform engineering in <span class="city">Ottawa</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>Data consulting in <span class="city">Halifax</span></span>
+        </div>
+        <!-- duplicate for seamless loop -->
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>DevOps in <span class="city">Toronto</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span
+            >Cloud architecture in <span class="city">Vancouver</span></span
+          >
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>AI strategy in <span class="city">Montréal</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>Business analysis in <span class="city">Calgary</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>Platform engineering in <span class="city">Ottawa</span></span>
+        </div>
+        <div class="strip-item">
+          <span class="dot"></span
+          ><span>Data consulting in <span class="city">Halifax</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SPECIALIZATIONS ─── -->
+    <section class="specs" id="expertise">
+      <div class="section-head">
+        <h2>Four practice areas.<br /><em>One curated network.</em></h2>
+        <p>
+          We don't try to do everything. We go deep in the four disciplines
+          where senior, specialized expertise compounds — and where the right
+          consultant changes the trajectory of a project.
+        </p>
+      </div>
+
+      <div class="spec-grid">
+        <!-- DevOps -->
+        <div class="spec">
+          <div class="num mono">01 / DevOps</div>
+          <svg
+            class="glyph"
+            viewBox="0 0 72 72"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <circle cx="36" cy="36" r="22" />
+            <path d="M14 36 a22 22 0 0 1 44 0" stroke-dasharray="4 3" />
+            <path d="M36 14 v8 M58 36 h-8 M36 58 v-8 M14 36 h8" />
+            <circle cx="36" cy="36" r="6" fill="currentColor" />
+            <path d="M36 22 l4 6 -8 0 z" fill="currentColor" />
+          </svg>
+          <h3>DevOps & <em>Platform</em> Engineering</h3>
+          <p>
+            CI/CD pipelines, infrastructure-as-code, observability, and the
+            platform discipline that turns good engineering teams into fast
+            ones.
+          </p>
+          <div class="tag mono">Terraform · Kubernetes · GitOps</div>
+        </div>
+
+        <!-- Cloud -->
+        <div class="spec">
+          <div class="num mono">02 / Cloud</div>
+          <svg
+            class="glyph"
+            viewBox="0 0 72 72"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path
+              d="M20 44 a10 10 0 0 1 4-19.5 a14 14 0 0 1 26 4 a8 8 0 0 1 2 15.5 z"
+            />
+            <line x1="28" y1="52" x2="28" y2="60" />
+            <line x1="36" y1="52" x2="36" y2="62" />
+            <line x1="44" y1="52" x2="44" y2="60" />
+            <circle cx="28" cy="63" r="1.5" fill="currentColor" />
+            <circle cx="36" cy="65" r="1.5" fill="currentColor" />
+            <circle cx="44" cy="63" r="1.5" fill="currentColor" />
+          </svg>
+          <h3>Cloud <em>Architecture</em> & Migration</h3>
+          <p>
+            AWS, Azure, GCP — multi-cloud strategy, cost optimization, and
+            migrations led by architects who've shipped at scale.
+          </p>
+          <div class="tag mono">AWS · Azure · GCP · FinOps</div>
+        </div>
+
+        <!-- AI -->
+        <div class="spec">
+          <div class="num mono">03 / AI</div>
+          <svg
+            class="glyph"
+            viewBox="0 0 72 72"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <circle cx="22" cy="22" r="4" fill="currentColor" />
+            <circle cx="50" cy="22" r="4" fill="currentColor" />
+            <circle cx="36" cy="36" r="5" fill="currentColor" />
+            <circle cx="22" cy="50" r="4" fill="currentColor" />
+            <circle cx="50" cy="50" r="4" fill="currentColor" />
+            <line x1="22" y1="22" x2="36" y2="36" />
+            <line x1="50" y1="22" x2="36" y2="36" />
+            <line x1="22" y1="50" x2="36" y2="36" />
+            <line x1="50" y1="50" x2="36" y2="36" />
+            <line x1="22" y1="22" x2="22" y2="50" stroke-dasharray="2 2" />
+            <line x1="50" y1="22" x2="50" y2="50" stroke-dasharray="2 2" />
+          </svg>
+          <h3>AI & <em>Applied</em> Machine Learning</h3>
+          <p>
+            From LLM strategy to production ML — agents, RAG systems, and the
+            integration work that turns AI pilots into business outcomes.
+          </p>
+          <div class="tag mono">LLMs · RAG · MLOps · Agents</div>
+        </div>
+
+        <!-- Business Analysis -->
+        <div class="spec">
+          <div class="num mono">04 / Business Analysis</div>
+          <svg
+            class="glyph"
+            viewBox="0 0 72 72"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <rect x="14" y="38" width="8" height="20" />
+            <rect x="28" y="28" width="8" height="30" />
+            <rect x="42" y="20" width="8" height="38" />
+            <path
+              d="M14 22 L26 18 L40 14 L56 8"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <circle cx="14" cy="22" r="2" fill="currentColor" />
+            <circle cx="56" cy="8" r="2" fill="currentColor" />
+            <path d="M52 12 L56 8 L60 12" stroke="currentColor" />
+          </svg>
+          <h3>Business <em>Analysis</em> & Strategy</h3>
+          <p>
+            Requirements, process design, and the translation layer between
+            executives and engineering — bringing clarity to complex
+            transformations.
+          </p>
+          <div class="tag mono">Discovery · Roadmaps · Process</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── NETWORK STATS ─── -->
+    <section class="network" id="network">
+      <div class="network-inner">
+        <h2>A consulting network<br />built on <em>deep relationships.</em></h2>
+        <div class="stats">
+          <div class="stat">
+            <div class="num">200<em>+</em></div>
+            <div class="label">Vetted senior consultants across Canada</div>
+          </div>
+          <div class="stat">
+            <div class="num">7</div>
+            <div class="label">Major Canadian metros in active network</div>
+          </div>
+          <div class="stat">
+            <div class="num">7<em>yr</em></div>
+            <div class="label">Average practitioner experience</div>
+          </div>
+          <div class="stat">
+            <div class="num">96<em>%</em></div>
+            <div class="label">Client engagement renewal rate</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── CTA ─── -->
+    <section class="cta" id="contact">
+      <h2>
+        Tell us what you're <em>building.</em><br />We'll bring the right
+        people.
+      </h2>
+      <a href="#" class="cta-btn">
+        <span>Start a conversation</span>
+        <span class="arrow">→</span>
+      </a>
+    </section>
+
+    <!-- ─── FOOTER ─── -->
+    <footer>
+      <div class="footer-inner">
+        <div>
+          <h4>odiseus<em>.</em></h4>
+          <p>
+            Boutique consulting practice connecting Canadian enterprises with
+            deep specialist expertise in DevOps, Cloud, AI, and business
+            analysis.
+          </p>
+        </div>
+        <div>
+          <div class="col-title mono">Headquarters</div>
+          <p>3392 Wonderland Rd S<br />London, ON N6L 1A8<br />Canada</p>
+        </div>
+        <div>
+          <div class="col-title mono">Offshore practice</div>
+          <p>
+            8-3-167/A/52, Vani Nilayam<br />Vikaspuri, AG Colony Road<br />Hyderabad
+            500038
+          </p>
+        </div>
+      </div>
+      <div class="footer-bottom mono">
+        <span>© 2026 Odiseus Consulting</span>
+        <span>An Odiseus Software affiliate</span>
+      </div>
+    </footer>
+  </body>
 </html>

@@ -1,102 +1,174 @@
-// Letter scramble word cycling
-const words = ["Cloud", "Data", "AI Agents", "AI Assistants", "MCP Servers"];
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-let index = 0;
-let scrambleTimer = null;
+// main.js — Odiseus Talent
+// Handles hero word scramble, mobile navigation, role filtering, custom cursor and reveal animations.
 
-function scrambleTo(el, word) {
-  if (scrambleTimer) clearInterval(scrambleTimer);
-  let iteration = 0;
+(() => {
+  const words = ["Cloud", "Data", "AI Agents", "AI Assistants", "MCP Servers"];
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  let wordIndex = 0;
+  let scrambleTimer = null;
 
-  scrambleTimer = setInterval(() => {
-    el.textContent = word
-      .split('')
-      .map((char, i) => {
-        if (char === ' ') return ' ';
-        if (i < Math.floor(iteration / 2)) return char;
-        return CHARS[Math.floor(Math.random() * CHARS.length)];
-      })
-      .join('');
+  function scrambleTo(el, word) {
+    if (!el) return;
+    if (scrambleTimer) clearInterval(scrambleTimer);
 
-    iteration++;
+    let iteration = 0;
+    scrambleTimer = setInterval(() => {
+      el.textContent = word
+        .split("")
+        .map((char, i) => {
+          if (char === " ") return " ";
+          if (i < Math.floor(iteration / 2)) return char;
+          return chars[Math.floor(Math.random() * chars.length)];
+        })
+        .join("");
 
-    if (iteration > word.length * 2 + 4) {
-      clearInterval(scrambleTimer);
-      scrambleTimer = null;
-      el.textContent = word;
+      iteration += 1;
+
+      if (iteration > word.length * 2 + 4) {
+        clearInterval(scrambleTimer);
+        scrambleTimer = null;
+        el.textContent = word;
+      }
+    }, 55);
+  }
+
+  function cycleWord() {
+    const el = document.getElementById("cycleWord");
+    if (!el) return;
+    wordIndex = (wordIndex + 1) % words.length;
+    scrambleTo(el, words[wordIndex]);
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    setInterval(cycleWord, 2200);
+
+    // ── Mobile navigation ────────────────────────────────────────────────
+    const navToggle = document.getElementById("navToggle");
+    const navMenu = document.getElementById("navMenu");
+    const mainNav = document.getElementById("mainNav");
+
+    function closeNav() {
+      if (!navToggle || !navMenu) return;
+      navMenu.classList.remove("open");
+      navToggle.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      navToggle.setAttribute("aria-label", "Open navigation menu");
+      document.body.classList.remove("nav-open");
     }
-  }, 55);
-}
 
-function cycleWord() {
-  const el = document.getElementById('cycleWord');
-  if (!el) return;
-  index = (index + 1) % words.length;
-  scrambleTo(el, words[index]);
-}
+    function openNav() {
+      if (!navToggle || !navMenu || !mainNav) return;
 
-setInterval(cycleWord, 2200);
+      const navH = Math.round(mainNav.getBoundingClientRect().height);
+      document.documentElement.style.setProperty("--nav-h", `${navH}px`);
 
-// ── Hamburger nav ──────────────────────────────────────────────────────────
-const navToggle = document.getElementById('navToggle');
-const navMenu   = document.getElementById('navMenu');
-const mainNav   = document.getElementById('mainNav');
+      navMenu.classList.add("open");
+      navToggle.classList.add("open");
+      navToggle.setAttribute("aria-expanded", "true");
+      navToggle.setAttribute("aria-label", "Close navigation menu");
+      document.body.classList.add("nav-open");
+    }
 
-function closeNav() {
-  if (!navMenu) return;
-  navMenu.classList.remove('open');
-  navToggle.classList.remove('open');
-  navToggle.setAttribute('aria-expanded', 'false');
-  navToggle.setAttribute('aria-label', 'Open navigation menu');
-  document.body.style.overflow = '';
-}
+    if (navToggle && navMenu && mainNav) {
+      navToggle.addEventListener("click", (event) => {
+        event.stopPropagation();
+        navMenu.classList.contains("open") ? closeNav() : openNav();
+      });
 
-function openNav() {
-  if (!navMenu) return;
-  // Sync drawer top with actual nav height so it never overlaps or gaps
-  const navH = mainNav.getBoundingClientRect().height;
-  navMenu.style.top = navH + 'px';
+      navMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeNav);
+      });
 
-  navMenu.classList.add('open');
-  navToggle.classList.add('open');
-  navToggle.setAttribute('aria-expanded', 'true');
-  navToggle.setAttribute('aria-label', 'Close navigation menu');
-  // Lock body scroll while drawer is open
-  document.body.style.overflow = 'hidden';
-}
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && navMenu.classList.contains("open")) {
+          closeNav();
+          navToggle.focus();
+        }
+      });
 
-if (navToggle && navMenu) {
-  // Toggle on click
-  navToggle.addEventListener('click', e => {
-    e.stopPropagation();
-    navMenu.classList.contains('open') ? closeNav() : openNav();
-  });
+      document.addEventListener("click", (event) => {
+        if (navMenu.classList.contains("open") && !mainNav.contains(event.target)) {
+          closeNav();
+        }
+      });
 
-  // Close when any link inside the drawer is tapped
-  navMenu.querySelectorAll('a').forEach(a => {
-    a.addEventListener('click', closeNav);
-  });
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 768) closeNav();
+      });
+    }
 
-  // Close on Escape key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && navMenu.classList.contains('open')) {
-      closeNav();
-      navToggle.focus();
+    // ── Role filters ─────────────────────────────────────────────────────
+    const filterButtons = document.querySelectorAll(".filter-btn[data-filter]");
+    const roleRows = document.querySelectorAll(".role-row[data-category]");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter || "all";
+
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+
+        roleRows.forEach((row) => {
+          const category = row.dataset.category;
+          const shouldShow = filter === "all" || category === filter;
+          row.classList.toggle("is-hidden", !shouldShow);
+        });
+      });
+    });
+
+    // ── Custom cursor on desktop/fine pointer only ───────────────────────
+    const supportsFinePointer = window.matchMedia("(pointer: fine)").matches;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dot = document.getElementById("cDot");
+    const ring = document.getElementById("cRing");
+
+    if (supportsFinePointer && !prefersReducedMotion && dot && ring) {
+      document.body.classList.add("custom-cursor-enabled");
+
+      let mouseX = 0;
+      let mouseY = 0;
+      let ringX = 0;
+      let ringY = 0;
+
+      document.addEventListener("mousemove", (event) => {
+        mouseX = event.clientX;
+        mouseY = event.clientY;
+      });
+
+      const animateCursor = () => {
+        ringX += (mouseX - ringX) * 0.13;
+        ringY += (mouseY - ringY) * 0.13;
+
+        dot.style.left = `${mouseX}px`;
+        dot.style.top = `${mouseY}px`;
+        ring.style.left = `${ringX}px`;
+        ring.style.top = `${ringY}px`;
+
+        requestAnimationFrame(animateCursor);
+      };
+
+      animateCursor();
+    }
+
+    // ── Scroll reveal ────────────────────────────────────────────────────
+    const revealElements = document.querySelectorAll(".reveal");
+
+    if ("IntersectionObserver" in window && revealElements.length) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+      );
+
+      revealElements.forEach((el) => observer.observe(el));
+    } else {
+      revealElements.forEach((el) => el.classList.add("in"));
     }
   });
-
-  // Close when clicking outside nav entirely
-  document.addEventListener('click', e => {
-    if (
-      navMenu.classList.contains('open') &&
-      !mainNav.contains(e.target)
-    ) {
-      closeNav();
-    }
-  });
-
-  // Close drawer when viewport is resized above mobile breakpoint
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) closeNav();
-  });
-}
+})();

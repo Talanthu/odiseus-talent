@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Odiseus Talent — DevOps · Cloud · AI Recruitment · London, Ontario</title>
+  <meta
+    name="description"
+    content="Odiseus Talent connects DevOps, Cloud, Data, and AI engineers with companies building the future across Canada, USA, and beyond."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@300;400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/styles/hero.css" />
+  <link rel="stylesheet" href="/styles/sections.css" />
+  <link rel="stylesheet" href="/styles/footer.css" />
+  <link rel="stylesheet" href="/styles/responsive.css" />
+
+  <script src="/main.js" defer></script>
+</head>
+
+<body>
+  <div class="cursor" aria-hidden="true">
+    <div class="c-dot" id="cDot"></div>
+    <div class="c-ring" id="cRing"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="site-nav" id="mainNav" aria-label="Primary navigation">
+    <a class="nav-logo" href="/talent.html" aria-label="Odiseus Talent home">
+      <span class="nav-logo-dot"></span>
+      <span>Odiseus <em class="nav-logo-talent">Talent</em></span>
+    </a>
+
+    <ul class="nav-center" id="navMenu" role="list">
+      <li><a href="/" data-nav-link>Software</a></li>
+      <li><a href="/talent.html" class="active" data-nav-link>Talent</a></li>
+      <li class="nav-drawer-cta">
+        <a href="#cta" class="nav-drawer-btn" data-nav-link>
+          Start a Conversation <span aria-hidden="true">→</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-right">
+      <a href="#cta" class="nav-cta">Start a Conversation</a>
+    </div>
+
+    <button
+      class="nav-hamburger"
+      id="navToggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="navMenu"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-body">
+      <div class="hero-pill">
+        <div class="pill-dot"></div>
+        <span class="pill-text">LONDON, ONTARIO · TECH TALENT SPECIALISTS · SINCE 2019</span>
+      </div>
+
+      <h1 class="hero-h1">
+        The engineers who build<br />
+        tomorrow's <span id="cycleWord" class="italic">Cloud</span><br />
+        — found.
+      </h1>
+
+      <p class="hero-sub">
+        Odiseus Talent connects DevOps, Cloud, Data, and AI engineers with
+        companies building the future — in Canada, USA and beyond.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#roles" class="btn-dark">Browse Open Roles</a>
+        <a href="#specialisms" class="btn-outline">Our Specialisms</a>
+      </div>
+    </div>
+
+    <div class="hero-stats" aria-label="Odiseus Talent key metrics">
+      <div class="hstat">
+        <div class="hstat-num"><span>187</span>+</div>
+        <div class="hstat-label">Tech placements made</div>
+        <div class="hstat-mono">// since 2021</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num"><span>12</span>w</div>
+        <div class="hstat-label">Average time-to-offer</div>
+        <div class="hstat-mono">// target timeline</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num"><span>92</span>%</div>
+        <div class="hstat-label">6-month retention</div>
+        <div class="hstat-mono">// roles filled</div>
+      </div>
+      <div class="hstat">
+        <div class="hstat-num"><span>140</span>+</div>
+        <div class="hstat-label">Tech clients</div>
+        <div class="hstat-mono">// active partners</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-inner">
+      <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Platform Engineer</span>
+      <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> AWS Solutions Architect</span>
+      <span class="ticker-item"><span class="tag tag-ai">AI</span> ML Engineer — RAG &amp; LLMs</span>
+      <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Site Reliability Engineer</span>
+      <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> GCP Infrastructure Lead</span>
+      <span class="ticker-item"><span class="tag tag-ai">AI</span> LLMOps Specialist</span>
+      <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Kubernetes Engineer</span>
+      <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> Azure Architect</span>
+      <span class="ticker-item"><span class="tag tag-ai">AI</span> Data Scientist</span>
+
+      <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Platform Engineer</span>
+      <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> AWS Solutions Architect</span>
+      <span class="ticker-item"><span class="tag tag-ai">AI</span> ML Engineer — RAG &amp; LLMs</span>
+      <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Site Reliability Engineer</span>
+      <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> GCP Infrastructure Lead</span>
+      <span class="ticker-item"><span class="tag tag-ai">AI</span> LLMOps Specialist</span>
+      <span class="ticker-item"><span class="tag tag-devops">DevOps</span> Kubernetes Engineer</span>
+      <span class="ticker-item"><span class="tag tag-cloud">Cloud</span> Azure Architect</span>
+      <span class="ticker-item"><span class="tag tag-ai">AI</span> Data Scientist</span>
+    </div>
+  </div>
+
+  <!-- MARKET INTELLIGENCE -->
+  <section class="market" id="market">
+    <div class="market-head reveal">
+      <div class="eyebrow">// MARKET_DEMAND_REPORT</div>
+      <h2 class="market-h2">Where the talent market<br /><em>is moving.</em></h2>
+    </div>
+
+    <div class="market-tier reveal">
+      <div class="tier-label tier-label--hot">TIER 1 — HOTTEST DEMAND</div>
+      <div class="demand-grid">
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--hot">Hottest demand</span>
+          <div class="demand-role">Cybersecurity Engineer / Analyst</div>
+          <p class="demand-stat">Security hiring continues to accelerate as every digital transformation program needs protection by design.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">CISSP</span>
+            <span class="spec-tag">CCNP</span>
+            <span class="spec-tag">Cloud security</span>
+            <span class="spec-tag">Zero Trust</span>
+            <span class="spec-tag">SIEM/SOAR</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $83K–$140K</div>
+        </article>
+
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--hot">Hottest demand</span>
+          <div class="demand-role">AI / ML Engineer</div>
+          <p class="demand-stat">LLM, RAG, and applied AI teams need engineers who can move models from pilots into production systems.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">PyTorch</span>
+            <span class="spec-tag">LLM fine-tuning</span>
+            <span class="spec-tag">MLOps</span>
+            <span class="spec-tag">Python</span>
+            <span class="spec-tag">RAG</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $116K–$190K</div>
+        </article>
+
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--hot">Hottest demand</span>
+          <div class="demand-role">Cloud Engineer / Architect</div>
+          <p class="demand-stat">Cloud adoption keeps expanding across Canadian industries, with demand for architecture and cost control.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">AWS</span>
+            <span class="spec-tag">Azure</span>
+            <span class="spec-tag">Terraform</span>
+            <span class="spec-tag">GCP</span>
+            <span class="spec-tag">FinOps</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $100K–$160K</div>
+        </article>
+      </div>
+    </div>
+
+    <div class="market-tier reveal">
+      <div class="tier-label tier-label--growing">TIER 2 — STRONG, CONSISTENT ORGANIC HIRING</div>
+      <div class="demand-grid">
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--growing">Growing</span>
+          <div class="demand-role">DevOps / Platform Engineer</div>
+          <p class="demand-stat">Demand driven by transformation programs — CI/CD, platform, and IaC skills remain critical.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">Kubernetes</span>
+            <span class="spec-tag">CI/CD</span>
+            <span class="spec-tag">GitHub Actions</span>
+            <span class="spec-tag">Ansible</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $90K–$145K</div>
+        </article>
+
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--growing">Growing</span>
+          <div class="demand-role">Data Scientist / Data Engineer</div>
+          <p class="demand-stat">Analytics and ML pipelines are in demand across SaaS, fintech, healthcare, and enterprise teams.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">SQL</span>
+            <span class="spec-tag">Spark</span>
+            <span class="spec-tag">dbt</span>
+            <span class="spec-tag">Tableau</span>
+            <span class="spec-tag">Python</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $85K–$140K</div>
+        </article>
+
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--growing">Growing</span>
+          <div class="demand-role">Solutions Architect</div>
+          <p class="demand-stat">Architects are needed to connect product goals, infrastructure decisions, and scalable delivery.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">TOGAF</span>
+            <span class="spec-tag">AWS SA cert</span>
+            <span class="spec-tag">Microservices</span>
+            <span class="spec-tag">API design</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $110K–$170K</div>
+        </article>
+      </div>
+    </div>
+
+    <div class="market-tier reveal">
+      <div class="tier-label tier-label--steady">TIER 3 — STABLE, SPECIALIST NICHES</div>
+      <div class="demand-grid">
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--steady">Steady</span>
+          <div class="demand-role">Software Engineer (Full-stack / Backend)</div>
+          <p class="demand-stat">Strong demand continues for product engineers who can build reliable systems and ship quickly.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">Node.js</span>
+            <span class="spec-tag">React</span>
+            <span class="spec-tag">Golang</span>
+            <span class="spec-tag">Microservices</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $80K–$135K</div>
+        </article>
+
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--steady">Steady</span>
+          <div class="demand-role">Business Systems Analyst</div>
+          <p class="demand-stat">AI and cloud programs need translators who can clarify requirements and align stakeholders.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">SQL</span>
+            <span class="spec-tag">Tableau</span>
+            <span class="spec-tag">Agile</span>
+            <span class="spec-tag">Stakeholder mgmt</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $70K–$110K</div>
+        </article>
+
+        <article class="demand-card">
+          <span class="demand-badge demand-badge--steady">Steady</span>
+          <div class="demand-role">IT Support / Infrastructure</div>
+          <p class="demand-stat">Core infrastructure roles remain essential as cloud migration and modernization projects expand.</p>
+          <div class="demand-skills">
+            <span class="spec-tag">CompTIA A+</span>
+            <span class="spec-tag">CCNP</span>
+            <span class="spec-tag">Azure AD</span>
+          </div>
+          <div class="demand-salary"><span>Salary range</span>CAD $50K–$85K</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECIALISMS -->
+  <section class="specialisms" id="specialisms">
+    <div class="spec-header reveal">
+      <div>
+        <div class="eyebrow">// OUR_SPECIALISMS</div>
+        <h2 class="spec-h2">Three domains.<br /><em>Deep expertise.</em></h2>
+      </div>
+    </div>
+
+    <div class="spec-grid reveal">
+      <article class="spec-card">
+        <div class="spec-icon">⚙️</div>
+        <div class="spec-title">DevOps &amp; Platform</div>
+        <p class="spec-body">
+          From CI/CD pipelines to internal developer platforms, we place the engineers who keep software shipping fast and reliably. We know the toolchain inside out.
+        </p>
+        <div class="spec-tags">
+          <span class="spec-tag">Kubernetes</span>
+          <span class="spec-tag">Terraform</span>
+          <span class="spec-tag">GitHub Actions</span>
+          <span class="spec-tag">ArgoCD</span>
+          <span class="spec-tag">Helm</span>
+          <span class="spec-tag">SRE</span>
+          <span class="spec-tag">Platform Eng</span>
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon">☁️</div>
+        <div class="spec-title">Cloud Infrastructure</div>
+        <p class="spec-body">
+          Multi-cloud architects, FinOps specialists, and cloud-native engineers for AWS, GCP, and Azure — from individual contributors to cloud centre-of-excellence leads.
+        </p>
+        <div class="spec-tags">
+          <span class="spec-tag">AWS</span>
+          <span class="spec-tag">GCP</span>
+          <span class="spec-tag">Azure</span>
+          <span class="spec-tag">FinOps</span>
+          <span class="spec-tag">Cloud Security</span>
+          <span class="spec-tag">IaC</span>
+        </div>
+      </article>
+
+      <article class="spec-card">
+        <div class="spec-icon">🧠</div>
+        <div class="spec-title">AI &amp; Machine Learning</div>
+        <p class="spec-body">
+          ML Engineers, MLOps, LLM specialists, and AI Product Managers. We understand the full stack from model training to production inference and RAG pipelines.
+        </p>
+        <div class="spec-tags">
+          <span class="spec-tag">PyTorch</span>
+          <span class="spec-tag">MLflow</span>
+          <span class="spec-tag">LangChain</span>
+          <span class="spec-tag">Vertex AI</span>
+          <span class="spec-tag">SageMaker</span>
+          <span class="spec-tag">RAG</span>
+          <span class="spec-tag">LLMOps</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- OPEN ROLES -->
+  <section class="roles" id="roles">
+    <div class="roles-head reveal">
+      <div>
+        <div class="eyebrow">// ACTIVE_SEARCHES</div>
+        <h2 class="roles-h2">Featured <em>open roles.</em></h2>
+      </div>
+
+      <div class="roles-filters" aria-label="Filter open roles">
+        <button class="filter-btn active" type="button" data-filter="all">All</button>
+        <button class="filter-btn" type="button" data-filter="devops">DevOps</button>
+        <button class="filter-btn" type="button" data-filter="cloud">Cloud</button>
+        <button class="filter-btn" type="button" data-filter="ai">AI</button>
+      </div>
+    </div>
+
+    <div class="roles-list reveal" aria-live="polite">
+      <article class="role-row" data-category="devops">
+        <span class="role-badge badge-devops">DevOps</span>
+        <div class="role-info">
+          <div class="role-title-text">Senior Platform Engineer</div>
+          <div class="role-co">FinTech Scale-up · Series C</div>
+        </div>
+        <div class="role-meta">
+          <div class="role-loc">New York, NY (Hybrid)</div>
+          <div class="role-sal">$145–175K CAD</div>
+          <div class="role-arrow" aria-hidden="true">→</div>
+        </div>
+      </article>
+
+      <article class="role-row" data-category="ai">
+        <span class="role-badge badge-ai">AI</span>
+        <div class="role-info">
+          <div class="role-title-text">ML Engineer — LLM &amp; RAG</div>
+          <div class="role-co">AI Product Company · San Francisco</div>
+        </div>
+        <div class="role-meta">
+          <div class="role-loc">Remote-Friendly (US / Canada)</div>
+          <div class="role-sal">$155–195K CAD</div>
+          <div class="role-arrow" aria-hidden="true">→</div>
+        </div>
+      </article>
+
+      <article class="role-row" data-category="cloud">
+        <span class="role-badge badge-cloud">Cloud</span>
+        <div class="role-info">
+          <div class="role-title-text">AWS Solutions Architect</div>
+          <div class="role-co">Enterprise Retail · Seattle</div>
+        </div>
+        <div class="role-meta">
+          <div class="role-loc">Seattle, WA (Onsite)</div>
+          <div class="role-sal">$160–190K CAD</div>
+          <div class="role-arrow" aria-hidden="true">→</div>
+        </div>
+      </article>
+
+      <article class="role-row" data-category="devops">
+        <span class="role-badge badge-devops">DevOps</span>
+        <div class="role-info">
+          <div class="role-title-text">Site Reliability Engineer (SRE)</div>
+          <div class="role-co">Banking Platform · New York</div>
+        </div>
+        <div class="role-meta">
+          <div class="role-loc">Austin, TX (Hybrid)</div>
+          <div class="role-sal">$140–170K CAD</div>
+          <div class="role-arrow" aria-hidden="true">→</div>
+        </div>
+      </article>
+
+      <article class="role-row" data-category="ai">
+        <span class="role-badge badge-ai">AI</span>
+        <div class="role-info">
+          <div class="role-title-text">Director of AI Engineering</div>
+          <div class="role-co">Health-Tech Startup · Chicago</div>
+        </div>
+        <div class="role-meta">
+          <div class="role-loc">Chicago, IL</div>
+          <div class="role-sal">$200–240K CAD</div>
+          <div class="role-arrow" aria-hidden="true">→</div>
+        </div>
+      </article>
+
+      <article class="role-row" data-category="cloud">
+        <span class="role-badge badge-cloud">Cloud</span>
+        <div class="role-info">
+          <div class="role-title-text">FinOps &amp; Cloud Cost Strategist</div>
+          <div class="role-co">Multi-cloud Enterprise · Remote</div>
+        </div>
+        <div class="role-meta">
+          <div class="role-loc">Hybrid · Remote</div>
+          <div class="role-sal">$130–155K CAD</div>
+          <div class="role-arrow" aria-hidden="true">→</div>
+        </div>
+      </article>
+    </div>
+
+    <div class="see-all">
+      <a href="#cta">Sign up to browse all 38+ open roles</a>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="why" id="why">
+    <div class="why-content reveal">
+      <div class="eyebrow">// WHY_ODISEUS</div>
+      <h2 class="why-h2">We speak <em>engineer,</em><br />not just recruiter.</h2>
+      <p class="why-p">
+        We're active in AI communities and university ecosystems identifying rising talent before they hit the job market. Our strength lies in career advisory: we know how to shape candidates to meet employer expectations, not just match job descriptions.
+      </p>
+
+      <div class="why-items">
+        <div class="why-item">
+          <div class="why-icon">🎯</div>
+          <div class="why-item-text">
+            <strong>Specialist Networks Only</strong>
+            <span>Our talent pools are mapped specifically to cloud-native and AI engineering communities — no generalist noise.</span>
+          </div>
+        </div>
+
+        <div class="why-item">
+          <div class="why-icon">⚡</div>
+          <div class="why-item-text">
+            <strong>12-Week Average to Offer</strong>
+            <span>Speed matters in a competitive market. Our process is built to move fast without sacrificing quality or fit.</span>
+          </div>
+        </div>
+
+        <div class="why-item">
+          <div class="why-icon">🔁</div>
+          <div class="why-item-text">
+            <strong>90-Day Guarantee</strong>
+            <span>If a placed candidate leaves within 90 days, we replace at no additional cost.</span>
+          </div>
+        </div>
+
+        <div class="why-item">
+          <div class="why-icon">📍</div>
+          <div class="why-item-text">
+            <strong>London, ON HQ — North America Reach</strong>
+            <span>Headquartered in London, Ontario with active candidate pipelines across Canada, the US, and offshore.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="process-head reveal">
+      <div class="eyebrow">// HOW_IT_WORKS</div>
+      <h2 class="process-h2">Built for speed.<br /><em>Optimised for fit.</em></h2>
+    </div>
+
+    <div class="process-steps reveal">
+      <article class="p-step" data-num="01">
+        <div class="p-step-num">01 / BRIEF</div>
+        <div class="p-step-title">Technical Discovery</div>
+        <div class="p-step-body">We go deep on your stack, team culture, and growth roadmap so every search starts with full alignment.</div>
+      </article>
+
+      <article class="p-step" data-num="02">
+        <div class="p-step-num">02 / SEARCH</div>
+        <div class="p-step-title">Targeted Outreach</div>
+        <div class="p-step-body">We tap specialist networks and reach passively-employed engineers who may not respond to generic outreach.</div>
+      </article>
+
+      <article class="p-step" data-num="03">
+        <div class="p-step-num">03 / SHORTLIST</div>
+        <div class="p-step-title">Curated Slate</div>
+        <div class="p-step-body">A handpicked shortlist of 3–5 candidates with scorecards, technical assessments, and our honest read.</div>
+      </article>
+
+      <article class="p-step" data-num="04">
+        <div class="p-step-num">04 / CLOSE</div>
+        <div class="p-step-title">Offer &amp; Onboard</div>
+        <div class="p-step-body">We manage compensation conversations, references, and stay engaged through the first 90 days.</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial" id="testimonial">
+    <div class="reveal">
+      <div class="eyebrow">// CLIENT_STORY</div>
+      <h2 class="testi-h2">When the right hire<br /><em>changes everything.</em></h2>
+      <p class="testi-p">
+        Our clients come to us when they need engineers who are genuinely hard to find — and they stay because we find them.
+      </p>
+    </div>
+
+    <figure class="quote-wrap reveal">
+      <blockquote class="q-text">
+        Odiseus placed our entire DevOps team — five engineers in under two months. They understood Kubernetes and GitOps better than most engineers I've interviewed. This wasn't a recruiter, it was a technical partner.
+      </blockquote>
+
+      <figcaption class="q-author">
+        <div class="q-avatar">R</div>
+        <div>
+          <div class="q-name">Rohan Mehta</div>
+          <div class="q-role">VP Engineering · Covalent Labs, Toronto</div>
+        </div>
+      </figcaption>
+
+      <div class="q-rating">
+        <div class="q-metric"><strong>5</strong><span>engineers placed</span></div>
+        <div class="q-metric"><strong>52d</strong><span>total timeline</span></div>
+        <div class="q-metric"><strong>100%</strong><span>still at company</span></div>
+      </div>
+    </figure>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="cta">
+    <div class="cta-blob"></div>
+    <div class="eyebrow">// LET'S_BUILD_TOGETHER</div>
+    <h2 class="cta-h2">Find the engineer<br /><em>you can't find yourself.</em></h2>
+    <p class="cta-p">
+      Whether you're scaling a platform team or finding a singular AI architect, we'd love to hear your challenge.
+    </p>
+    <div class="cta-btns">
+      <a href="mailto:info@odiseussoftware.com" class="btn-dark">Start a Conversation</a>
+      <a href="#roles" class="btn-outline">Browse Roles</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="f-logo"><span class="nav-logo-dot"></span>Odiseus Talent</div>
+        <p class="f-tagline">Recruitment partner for DevOps, Cloud Infrastructure, Data, and AI engineering.</p>
+
+        <div class="f-office-label">CANADA — HEAD OFFICE</div>
+        <div class="f-address">
+          3392 Wonderland Rd S<br />
+          London, ON N6L 1A8, Canada<br />
+          <a href="mailto:info@odiseussoftware.com">info@odiseussoftware.com</a>
+        </div>
+
+        <div class="f-office-label">OFFSHORE — HYDERABAD, INDIA</div>
+        <div class="f-address">
+          <a href="https://share.google/aK4hTZOT1GE1kHdbS" target="_blank" rel="noopener noreferrer">
+            3rd Floor, Alcazar Mall, Plot No. 498,<br />
+            Road No. 36, Venkatagiri,<br />
+            Jubilee Hills, Hyderabad,<br />
+            Telangana 500033
+          </a>
+        </div>
+      </div>
+
+      <div class="f-col">
+        <h4>SPECIALISMS</h4>
+        <ul>
+          <li><a href="#specialisms">DevOps &amp; Platform</a></li>
+          <li><a href="#specialisms">Cloud Infrastructure</a></li>
+          <li><a href="#specialisms">AI &amp; Machine Learning</a></li>
+          <li><a href="#market">Data Engineering</a></li>
+          <li><a href="#market">Cloud Security</a></li>
+        </ul>
+      </div>
+
+      <div class="f-col">
+        <h4>COMPANY</h4>
+        <ul>
+          <li><a href="/">Odiseus Software</a></li>
+          <li><a href="/talent.html">Odiseus Talent</a></li>
+          <li><a href="#why">Why Odiseus</a></li>
+          <li><a href="#process">Process</a></li>
+        </ul>
+      </div>
+
+      <div class="f-col">
+        <h4>FOR CANDIDATES</h4>
+        <ul>
+          <li><a href="#roles">Open Roles</a></li>
+          <li><a href="#cta">Submit Your CV</a></li>
+          <li><a href="#market">Salary Benchmarks</a></li>
+          <li><a href="#cta">Career Advice</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span class="f-copy">© 2026 ODISEUS TALENT INC · LONDON, ONTARIO · ALL RIGHTS RESERVED</span>
+      <div class="f-socials">
+        <a href="https://www.linkedin.com/company/odiseussoftware" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="#">Twitter / X</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

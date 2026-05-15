@@ -1,377 +1,734 @@
+/* styles/responsive.css */
 /* ==========================================================================
    RESPONSIVE — Odiseus Talent
+   This file must be loaded LAST after hero.css, sections.css and footer.css.
    Breakpoints:
-   1024px  tablet landscape
-    768px  tablet portrait
-    480px  mobile
-    360px  small mobile
+   1180px desktop compact
+   900px  tablet
+   768px  mobile nav
+   560px  mobile
+   380px  small mobile
    ========================================================================== */
 
-/* ── Hamburger button (hidden on desktop) ── */
-.nav-hamburger {
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  background: none;
-  border: 1.5px solid var(--border-2);
-  border-radius: 6px;
-  padding: 7px 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: border-color .2s, background .2s;
-  -webkit-tap-highlight-color: transparent;
-}
-.nav-hamburger:hover  { background: var(--off); border-color: var(--mid); }
-.nav-hamburger.open   { background: var(--off); border-color: var(--ink); }
-.nav-hamburger span {
-  display: block;
-  width: 18px;
-  height: 1.5px;
-  background: var(--ink);
-  border-radius: 2px;
-  transition: transform .3s cubic-bezier(.76,0,.24,1), opacity .2s ease, width .2s ease;
-  transform-origin: center;
-}
-.nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-.nav-hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
-.nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+@media (max-width: 1180px) {
+  :root {
+    --page-x: 40px;
+  }
 
-/* Mobile CTA inside drawer — hidden on desktop */
-.nav-drawer-cta { display: none; }
+  .demand-grid,
+  .spec-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-/* ── Spec-header now has a single child — collapse the unused column ── */
-.spec-header { grid-template-columns: 1fr; gap: 0; }
+  .process-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
+  .hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-/* ==========================================================================
-   1024px — tablet landscape
-   ========================================================================== */
-@media (max-width: 1024px) {
+  .hstat {
+    padding: 28px 32px;
+  }
 
-  /* ── NAV ── */
-  nav { padding: 20px 40px; }
+  .testimonial {
+    gap: 52px;
+  }
 
-  /* ── HERO ── */
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
-  .hstat      { padding: 28px 32px; }
-
-  /* ── MARKET ── */
-  .market      { padding: 90px 40px; }
-  .demand-grid { grid-template-columns: repeat(2, 1fr); }
-
-  /* ── SPECIALISMS ── */
-  .specialisms { padding: 90px 40px; }
-  .spec-header { margin-bottom: 52px; }
-  .spec-grid   { grid-template-columns: repeat(2, 1fr); }
-
-  /* ── ROLES ── */
-  .roles       { padding: 90px 40px; }
-
-  /* ── WHY ── */
-  .why         { padding: 90px 40px; }
-
-  /* ── PROCESS ── */
-  .process       { padding: 90px 40px; }
-  .process-steps { grid-template-columns: repeat(2, 1fr); }
-
-  /* ── TESTIMONIAL ── */
-  .testimonial { padding: 90px 40px; gap: 52px; }
-
-  /* ── CLIENTS ── */
-  .clients { padding: 56px 40px; }
-
-  /* ── CTA ── */
-  .cta-section { padding: 110px 40px; }
-
-  /* ── FOOTER ── */
-  footer       { padding: 64px 40px 40px; }
-  .footer-top  { grid-template-columns: 1fr 1fr; gap: 48px 36px; }
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px 36px;
+  }
 }
 
+@media (max-width: 900px) {
+  :root {
+    --nav-h: 72px;
+    --page-x: 28px;
+  }
 
-/* ==========================================================================
-   768px — tablet portrait
-   ========================================================================== */
+  .site-nav {
+    gap: 16px;
+  }
+
+  .nav-logo {
+    font-size: 1.22rem;
+  }
+
+  .nav-center {
+    gap: 6px;
+  }
+
+  .nav-center a {
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 0.64rem;
+  }
+
+  .nav-cta {
+    min-height: 40px;
+    padding: 0 16px;
+  }
+
+  .hero-body {
+    padding: 68px var(--page-x) 44px;
+  }
+
+  .hero-h1 {
+    font-size: clamp(2.8rem, 8vw, 4.5rem);
+  }
+
+  .hero-sub {
+    font-size: 1rem;
+    max-width: 560px;
+  }
+
+  .market,
+  .specialisms,
+  .roles,
+  .why,
+  .process,
+  .testimonial {
+    padding-top: 84px;
+    padding-bottom: 84px;
+  }
+
+  .market-head,
+  .process-head {
+    margin-bottom: 52px;
+  }
+
+  .spec-header {
+    margin-bottom: 48px;
+  }
+
+  .roles-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 22px;
+    margin-bottom: 34px;
+  }
+
+  .roles-filters {
+    justify-content: flex-start;
+  }
+
+  .role-row {
+    grid-template-columns: 82px minmax(0, 1fr);
+    gap: 16px 20px;
+  }
+
+  .role-meta {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+  }
+
+  .role-arrow {
+    display: none;
+  }
+
+  .why-content {
+    max-width: none;
+  }
+
+  .testimonial {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .quote-wrap {
+    padding: 40px;
+  }
+
+  .footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .f-socials {
+    justify-content: flex-start;
+  }
+}
+
 @media (max-width: 768px) {
+  :root {
+    --nav-h: 64px;
+    --page-x: 24px;
+  }
 
-  /* ── Restore native cursor on touch devices ── */
-  .cursor { display: none; }
-  body    { cursor: auto; }
-  a, button { cursor: pointer; }
-  .nav-cta, .btn-dark, .btn-outline,
-  .filter-btn, .spec-card, .role-row { cursor: pointer; }
+  .cursor {
+    display: none !important;
+  }
 
-  /* ── NAV ── */
-  nav { padding: 14px 20px; }
+  body.custom-cursor-enabled,
+  body.custom-cursor-enabled a,
+  body.custom-cursor-enabled button {
+    cursor: auto;
+  }
 
-  /* Hide desktop nav-right entirely */
-  .nav-right     { display: none; }
-  .nav-hamburger { display: flex; }
+  .site-nav {
+    padding: 0 var(--page-x);
+  }
 
-  /* Drawer slides down from under the nav bar */
+  .nav-logo {
+    font-size: 1.14rem;
+  }
+
+  .nav-right {
+    display: none;
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+
   .nav-center {
     position: fixed;
-    top: 57px; left: 0; right: 0;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
     z-index: 98;
     flex-direction: column;
+    align-items: stretch;
     gap: 0;
-    list-style: none;
-    background: #fff;
-    border-bottom: 2px solid var(--border);
-    box-shadow: 0 16px 40px rgba(0,0,0,.12);
-    padding: 0 20px;
-    /* Animate with max-height so transition works */
-    display: flex !important;
+    background: rgba(255, 255, 255, 0.98);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 22px 48px rgba(10, 10, 15, 0.14);
+    padding: 0 var(--page-x) 18px;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     pointer-events: none;
-    transition: max-height .38s cubic-bezier(.76,0,.24,1),
-                opacity .26s ease;
+    transition:
+      max-height 0.38s cubic-bezier(0.76, 0, 0.24, 1),
+      opacity 0.24s ease;
   }
+
   .nav-center.open {
-    max-height: 480px;
+    max-height: 360px;
     opacity: 1;
     pointer-events: auto;
   }
 
-  /* Individual menu item rows */
   .nav-center > li {
     border-bottom: 1px solid var(--border);
   }
-  .nav-center > li:last-child { border-bottom: none; }
 
-  .nav-center > li > a {
-    display: flex;
-    align-items: center;
+  .nav-center > li:last-child {
+    border-bottom: none;
+  }
+
+  .nav-center a {
+    width: 100%;
+    min-height: 56px;
     justify-content: space-between;
-    padding: 17px 4px;
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: .01em;
+    padding: 0 4px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    font-size: 0.84rem;
     color: var(--ink);
-    text-decoration: none;
-    transition: color .2s, padding-left .2s;
-    -webkit-tap-highlight-color: transparent;
   }
-  .nav-center > li > a::after {
-    content: '→';
-    font-size: .78rem;
+
+  .nav-center a::after {
+    content: "→";
+    font-size: 0.8rem;
     color: var(--light);
-    transition: transform .22s ease, color .2s;
-    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
-  .nav-center > li > a:hover,
-  .nav-center > li > a:focus-visible {
+
+  .nav-center a:hover,
+  .nav-center a.active {
     color: var(--blue);
-    padding-left: 8px;
-    outline: none;
+    background: transparent;
   }
-  .nav-center > li > a:hover::after,
-  .nav-center > li > a:focus-visible::after {
+
+  .nav-center a:hover::after,
+  .nav-center a.active::after {
     color: var(--blue);
     transform: translateX(4px);
   }
 
-  /* Mobile-only CTA inside drawer */
   .nav-drawer-cta {
-    display: block !important;
-    padding: 20px 0 4px;
-    border-bottom: none !important;
+    display: block;
+    padding: 18px 0 0;
+    border-bottom: 0 !important;
   }
-  /* Override the ::after arrow on the CTA row */
-  .nav-drawer-cta > a::after { display: none; }
+
+  .nav-drawer-cta > a::after {
+    display: none;
+  }
+
   .nav-drawer-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 50px !important;
+    justify-content: center !important;
     gap: 8px;
     width: 100%;
-    padding: 15px;
-    background: var(--ink);
-    color: #fff !important;
-    border-radius: 8px;
-    font-size: .875rem;
+    padding: 0 16px !important;
+    background: var(--ink) !important;
+    color: var(--white) !important;
+    border-radius: 10px !important;
+    font-size: 0.82rem !important;
     font-weight: 600;
-    letter-spacing: .03em;
-    text-decoration: none;
-    transition: background .2s, gap .2s;
+    letter-spacing: 0.03em;
   }
-  .nav-drawer-btn:hover { background: var(--blue) !important; gap: 14px; padding-left: 15px !important; }
 
-  /* ── HERO ── */
-  .hero      { padding-top: 57px; }
-  .hero-body { padding: 52px 24px 36px; }
+  .nav-drawer-btn:hover {
+    background: var(--blue) !important;
+  }
 
-  /* Scale headline so "The engineers who build" fits the viewport */
-  .hero-h1   { font-size: clamp(1.9rem, 6.5vw, 2.8rem); line-height: 1.1; }
+  .hero {
+    min-height: auto;
+  }
 
-  .hero-pill   { margin-bottom: 28px; max-width: 100%; }
-  .pill-text   { font-size: .6rem; letter-spacing: .03em; }
-  .hero-sub    { font-size: .95rem; margin-bottom: 36px; }
+  .hero::before {
+    background-size: 44px 44px;
+  }
 
-  .hero-ctas  { flex-direction: column; align-items: stretch; gap: 10px; }
+  .hero-body {
+    padding: 54px var(--page-x) 42px;
+  }
+
+  .hero-pill {
+    margin-bottom: 30px;
+    padding-right: 12px;
+  }
+
+  .pill-text {
+    font-size: 0.58rem;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-h1 {
+    font-size: clamp(2.18rem, 9.6vw, 3.7rem);
+    line-height: 1.06;
+    margin-bottom: 22px;
+  }
+
+  .hero-sub {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 34px;
+  }
+
+  .hero-ctas {
+    flex-direction: column;
+    width: min(100%, 340px);
+    gap: 10px;
+  }
+
   .btn-dark,
-  .btn-outline { text-align: center; }
+  .btn-outline {
+    width: 100%;
+  }
 
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
-  .hstat      { padding: 24px 28px; }
-  .hstat-num  { font-size: 2rem; }
+  .hstat {
+    padding: 24px 20px;
+  }
 
-  /* ── MARKET ── */
-  .market       { padding: 64px 24px; }
-  .market-tier  { margin-bottom: 40px; }
-  .tier-label   { font-size: .55rem; flex-wrap: wrap; }
-  .demand-grid  { grid-template-columns: 1fr; }
-  .demand-card  { padding: 28px 24px; }
+  .hstat-num {
+    font-size: 2rem;
+  }
 
-  /* ── SPECIALISMS ── */
-  .specialisms { padding: 64px 24px; }
-  .spec-header { margin-bottom: 40px; }
-  .spec-grid   { grid-template-columns: 1fr; }
+  .hstat-label {
+    font-size: 0.7rem;
+  }
 
-  /* ── ROLES ── */
-  .roles       { padding: 64px 24px; }
-  .roles-head  { flex-direction: column; align-items: flex-start; gap: 20px; margin-bottom: 32px; }
-  .roles-filters { flex-wrap: wrap; gap: 6px; }
-  .role-row    { padding: 18px 20px; gap: 14px; }
-  .role-meta   { gap: 14px; }
+  .hstat-mono {
+    font-size: 0.55rem;
+  }
+
+  .ticker {
+    padding: 12px 0;
+  }
+
+  .ticker-inner {
+    animation-duration: 35s;
+  }
+
+  .ticker-item {
+    padding: 0 26px;
+    gap: 24px;
+    font-size: 0.58rem;
+  }
+
+  .market,
+  .specialisms,
+  .roles,
+  .why,
+  .process,
+  .testimonial {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+
+  .market-head {
+    margin-bottom: 42px;
+  }
+
+  .market-h2,
+  .spec-h2,
+  .process-h2,
+  .why-h2 {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+  }
+
+  .roles-h2,
+  .testi-h2 {
+    font-size: clamp(1.9rem, 8vw, 2.5rem);
+  }
+
+  .cta-h2 {
+    font-size: clamp(2.35rem, 11vw, 4rem);
+  }
+
+  .market-tier {
+    margin-bottom: 40px;
+  }
+
+  .tier-label {
+    font-size: 0.54rem;
+    line-height: 1.45;
+    align-items: flex-start;
+  }
+
+  .demand-grid,
+  .spec-grid,
+  .process-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .demand-card {
+    padding: 28px 24px;
+  }
+
+  .spec-card {
+    padding: 38px 28px;
+  }
+
+  .spec-title {
+    font-size: 1.32rem;
+  }
+
+  .roles {
+    overflow: hidden;
+  }
+
+  .roles-list {
+    background: transparent;
+    border: 0;
+    gap: 12px;
+  }
+
+  .role-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 22px 20px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .role-badge {
+    width: fit-content;
+  }
+
+  .role-meta {
+    grid-column: auto;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
   .role-loc,
-  .role-sal    { display: none; }
+  .role-sal {
+    display: flex;
+    font-size: 0.66rem;
+    max-width: 100%;
+    white-space: normal;
+  }
 
-  /* ── WHY ── */
-  .why { padding: 64px 24px; }
+  .why-items {
+    grid-template-columns: 1fr;
+  }
 
-  /* ── PROCESS ── */
-  .process       { padding: 64px 24px; }
-  .process-steps { grid-template-columns: repeat(2, 1fr); }
+  .process-head {
+    margin-bottom: 42px;
+  }
 
-  /* ── TESTIMONIAL ── */
-  .testimonial { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px; }
-  .q-rating    { flex-direction: column; gap: 16px; }
+  .p-step {
+    padding: 34px 28px;
+  }
 
-  /* ── CLIENTS ── */
-  .clients     { padding: 48px 24px; }
-  .clients-row { gap: 28px; flex-wrap: wrap; justify-content: center; }
+  .testimonial {
+    gap: 36px;
+  }
 
-  /* ── CTA ── */
-  .cta-section { padding: 80px 24px; }
-  .cta-btns    { flex-direction: column; align-items: center; gap: 10px; }
+  .quote-wrap {
+    padding: 34px 26px;
+  }
 
-  /* ── FOOTER ── */
-  footer          { padding: 48px 24px 32px; }
-  .footer-top     { grid-template-columns: 1fr 1fr; gap: 36px 20px; }
-  .footer-bottom  { flex-direction: column; gap: 16px; text-align: center; }
-  .f-socials      { justify-content: center; }
+  .quote-wrap::before {
+    top: 28px;
+    left: 26px;
+    font-size: 4rem;
+  }
+
+  .q-text {
+    font-size: 1.18rem;
+    margin-top: 14px;
+  }
+
+  .q-rating {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .cta-section {
+    padding: 80px var(--page-x);
+  }
+
+  .cta-btns {
+    flex-direction: column;
+    align-items: center;
+    width: min(100%, 340px);
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 36px 24px;
+  }
 }
 
+@media (max-width: 560px) {
+  :root {
+    --nav-h: 60px;
+    --page-x: 20px;
+  }
 
-/* ==========================================================================
-   480px — mobile
-   ========================================================================== */
-@media (max-width: 480px) {
+  .nav-logo {
+    font-size: 1.05rem;
+  }
 
-  /* ── NAV ── */
-  nav         { padding: 12px 16px; }
-  .nav-center { top: 53px; }
-  .nav-logo   { font-size: 1.15rem; }
+  .nav-logo-dot {
+    width: 7px;
+    height: 7px;
+  }
 
-  /* ── HERO ── */
-  .hero      { padding-top: 53px; }
-  .hero-body { padding: 40px 20px 28px; }
-  .hero-h1   { font-size: clamp(1.6rem, 7.5vw, 2rem); line-height: 1.12; }
-  .pill-text { font-size: .54rem; letter-spacing: .02em; }
-  .hero-sub  { font-size: .9rem; }
+  .nav-hamburger {
+    width: 42px;
+    height: 42px;
+    border-radius: 9px;
+  }
 
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
-  .hstat      { padding: 18px 14px; }
-  .hstat-num  { font-size: 1.7rem; }
-  .hstat-label { font-size: .68rem; }
-  .hstat-mono  { font-size: .54rem; }
+  .hero-body {
+    padding-top: 44px;
+    padding-bottom: 34px;
+  }
 
-  .btn-dark,
-  .btn-outline { padding: 14px 20px; width: 100%; }
+  .hero-pill {
+    width: 100%;
+    justify-content: flex-start;
+    margin-bottom: 26px;
+  }
 
-  /* ── MARKET ── */
-  .market      { padding: 56px 20px; }
-  .demand-card { padding: 24px 20px; }
-  .demand-role { font-size: 1rem; }
-  .demand-stat { font-size: .75rem; }
+  .pill-text {
+    font-size: 0.52rem;
+  }
 
-  /* ── SPECIALISMS ── */
-  .specialisms { padding: 56px 20px; }
-  .spec-card   { padding: 36px 28px; }
+  .hero-h1 {
+    font-size: clamp(2rem, 10vw, 3rem);
+    line-height: 1.08;
+  }
 
-  /* ── ROLES ── */
-  .roles           { padding: 56px 20px; }
-  .role-row        { padding: 16px 20px; gap: 12px; }
-  .role-meta       { display: none; }
-  .role-title-text { font-size: .95rem; }
-  .role-co         { font-size: .72rem; }
+  .hero-sub {
+    font-size: 0.9rem;
+  }
 
-  /* ── WHY ── */
-  .why          { padding: 56px 20px; }
-  .toronto-info { padding: 20px 22px; }
+  .hero-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-  /* ── PROCESS ── */
-  .process       { padding: 56px 20px; }
-  .process-steps { grid-template-columns: 1fr; }
-  .p-step        { padding: 32px 24px; }
+  .hstat {
+    padding: 20px 14px;
+  }
 
-  /* ── TESTIMONIAL ── */
-  .testimonial { padding: 56px 20px; }
-  .quote-wrap  { padding: 32px 24px; }
-  .q-text      { font-size: 1.1rem; margin-top: 16px; }
+  .hstat-num {
+    font-size: 1.72rem;
+  }
 
-  /* ── CLIENTS ── */
-  .clients     { padding: 40px 20px; }
-  .clients-row { gap: 20px; }
-  .client-name { font-size: .72rem; }
+  .hstat-label {
+    font-size: 0.66rem;
+  }
 
-  /* ── CTA ── */
-  .cta-section   { padding: 64px 20px; }
-  .cta-btns .btn-dark,
-  .cta-btns .btn-outline { width: 100%; }
+  .hstat-mono {
+    font-size: 0.5rem;
+  }
 
-  /* ── FOOTER ── */
-  footer       { padding: 40px 20px 24px; }
-  .footer-top  { grid-template-columns: 1fr; gap: 32px; }
-  .f-tagline   { max-width: 100%; }
+  .eyebrow {
+    font-size: 0.58rem;
+    line-height: 1.45;
+  }
+
+  .market,
+  .specialisms,
+  .roles,
+  .why,
+  .process,
+  .testimonial {
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+
+  .demand-card,
+  .spec-card,
+  .p-step,
+  .quote-wrap {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .roles-filters {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .filter-btn {
+    padding: 9px 6px;
+    width: 100%;
+    font-size: 0.58rem;
+  }
+
+  .role-title-text {
+    font-size: 1.06rem;
+  }
+
+  .role-co {
+    font-size: 0.74rem;
+  }
+
+  .why-item {
+    gap: 12px;
+  }
+
+  .q-author {
+    align-items: flex-start;
+  }
+
+  .cta-section {
+    padding-top: 68px;
+    padding-bottom: 68px;
+  }
+
+  footer {
+    padding-top: 44px;
+    padding-bottom: 28px;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-bottom: 40px;
+  }
+
+  .f-tagline {
+    max-width: 100%;
+  }
+
+  .footer-bottom {
+    padding-top: 24px;
+    text-align: left;
+  }
+
+  .f-socials {
+    gap: 16px;
+  }
 }
 
+@media (max-width: 380px) {
+  :root {
+    --page-x: 16px;
+  }
 
-/* ==========================================================================
-   360px — small mobile
-   ========================================================================== */
-@media (max-width: 360px) {
+  .nav-logo {
+    font-size: 0.98rem;
+  }
 
-  /* ── NAV ── */
-  nav         { padding: 11px 14px; }
-  .nav-center { top: 50px; }
-  .nav-logo   { font-size: 1.05rem; }
+  .hero-h1 {
+    font-size: 1.86rem;
+  }
 
-  /* ── HERO ── */
-  .hero       { padding-top: 50px; }
-  .hero-h1    { font-size: 1.5rem; line-height: 1.15; }
-  .pill-text  { font-size: .48rem; letter-spacing: .01em; }
-  .hero-sub   { font-size: .85rem; }
+  .pill-dot {
+    width: 20px;
+    height: 20px;
+  }
 
-  .hstat      { padding: 14px 12px; }
-  .hstat-num  { font-size: 1.5rem; }
-  .hstat-label { font-size: .62rem; }
-  .hstat-mono  { font-size: .5rem; }
+  .pill-text {
+    font-size: 0.48rem;
+  }
 
-  /* ── MARKET ── */
-  .demand-card  { padding: 20px 16px; }
-  .demand-role  { font-size: .95rem; }
+  .hero-sub {
+    font-size: 0.86rem;
+  }
 
-  /* ── ROLES ── */
-  .role-title-text { font-size: .88rem; }
+  .hstat {
+    padding: 16px 12px;
+  }
 
-  /* ── PROCESS ── */
-  .p-step { padding: 28px 20px; }
+  .hstat-num {
+    font-size: 1.52rem;
+  }
 
-  /* ── FOOTER ── */
-  .f-copy { font-size: .55rem; }
+  .hstat-label {
+    font-size: 0.61rem;
+  }
+
+  .hstat-mono {
+    font-size: 0.48rem;
+  }
+
+  .roles-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demand-card,
+  .spec-card,
+  .p-step,
+  .quote-wrap,
+  .role-row {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .q-text {
+    font-size: 1.08rem;
+  }
+
+  .f-copy {
+    font-size: 0.54rem;
+  }
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .ticker-inner {
+    animation: none !important;
+  }
 }
