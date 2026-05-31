@@ -1,0 +1,209 @@
+/* ─── SVC HERO ─── */
+.svc-hero {
+  padding: 9rem 2.5rem 6rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.svc-hero-label {
+  color: var(--blue);
+  margin-bottom: 1.4rem;
+  display: block;
+}
+
+/* h1 inherits global Instrument Serif styles from home.css */
+
+.svc-hero-sub {
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 620px;
+  line-height: 1.65;
+  margin-top: 0;
+}
+
+/* ─── CATALOGUE ─── */
+.svc-catalogue {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem 8rem;
+}
+
+.svc-category {
+  margin-bottom: 7rem;
+}
+
+.svc-category:last-child {
+  margin-bottom: 0;
+}
+
+.svc-cat-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.svc-cat-num {
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.svc-cat-title {
+  font-family: "Instrument Serif", serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 0;
+}
+
+.svc-cat-rule {
+  height: 1px;
+  background: var(--blue);
+  opacity: 0.2;
+  margin-bottom: 2rem;
+  border: none;
+}
+
+.svc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.svc-service {
+  font-family: "Geist", sans-serif;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  padding: 0.45rem 0;
+  line-height: 1.6;
+  cursor: default;
+  transition: color 0.15s ease;
+}
+
+.svc-service:hover {
+  color: var(--blue);
+}
+
+/* ─── CTA ─── */
+.svc-cta {
+  background: var(--paper-warm);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 7rem 2.5rem;
+  text-align: center;
+}
+
+.svc-cta-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.svc-cta h2 {
+  font-family: "Instrument Serif", serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin: 0 0 1.2rem;
+}
+
+.svc-cta-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0 auto 2.5rem;
+  max-width: 480px;
+}
+
+.svc-cta-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.svc-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.8rem;
+  border-radius: 8px;
+  background: var(--blue);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--blue);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.svc-btn-primary:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.svc-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.8rem;
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.svc-btn-secondary:hover {
+  background: var(--blue-soft);
+  transform: translateY(-1px);
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .svc-hero {
+    padding-top: 7rem;
+    padding-bottom: 4rem;
+  }
+
+  .svc-cat-header {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .svc-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .svc-hero {
+    padding: 6rem 1.5rem 3.5rem;
+  }
+
+  .svc-catalogue {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .svc-category {
+    margin-bottom: 5rem;
+  }
+
+  .svc-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .svc-cta {
+    padding: 5rem 1.5rem;
+  }
+}
