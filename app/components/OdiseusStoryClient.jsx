@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Fragment } from "react";
 
 /* ─── ADAPTIVE NAV (dark ↔ light glass based on scroll position) ─── */
 function useAdaptiveNav() {
@@ -113,6 +113,381 @@ function useRevealObserver() {
       .forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
+  }, []);
+}
+
+/* ─── HERO SCROLLYTELLING (Apple-style pinned warp + word reveal) ─── */
+function useHeroScroll() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const wrap = document.querySelector(".os-hero-scroll");
+    const hero = document.querySelector(".os-hero");
+    if (!wrap || !hero) return;
+
+    const words = Array.from(hero.querySelectorAll(".os-hero-word"));
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    /* Paragraph reveal occupies the middle of the scroll track so the hero
+       has a moment to settle on entry and to release on exit. */
+    const WORD_START = 0.18;
+    const WORD_END = 0.82;
+
+    let raf = null;
+    let lastP = -1;
+    let active = false;
+
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    const resetWords = () => {
+      words.forEach((w) => {
+        w.style.opacity = "";
+        w.style.transform = "";
+        w.style.filter = "";
+      });
+    };
+
+    const apply = (p) => {
+      hero.style.setProperty("--p", p.toFixed(4));
+      const reveal = ((p - WORD_START) / (WORD_END - WORD_START)) * words.length;
+      for (let i = 0; i < words.length; i++) {
+        const o = clamp01(reveal - i);
+        const w = words[i];
+        w.style.opacity = (0.08 + o * 0.92).toFixed(3);
+        w.style.transform = `translateY(${((1 - o) * 0.5).toFixed(3)}em)`;
+        w.style.filter = o < 1 ? `blur(${((1 - o) * 6).toFixed(2)}px)` : "none";
+      }
+    };
+
+    const measure = () => {
+      raf = null;
+      const rect = wrap.getBoundingClientRect();
+      /* Measure against the PINNED element's own height (not window.innerHeight)
+         so the progress math stays stable on iOS/Android as the URL bar grows
+         and shrinks — this is what prevents the scrub from jumping. */
+      const total = rect.height - hero.offsetHeight;
+      const p = clamp01(total > 0 ? -rect.top / total : 0);
+      if (Math.abs(p - lastP) < 0.0008) return;
+      lastP = p;
+      apply(p);
+    };
+
+    const onScroll = () => {
+      if (raf == null) raf = requestAnimationFrame(measure);
+    };
+
+    const stop = () => {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.visualViewport?.removeEventListener("resize", onScroll);
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+    };
+
+    const sync = () => {
+      /* Reduced motion is the only static fallback — the scrollytelling runs
+         on every viewport size (mobile, tablet, desktop). */
+      if (mqReduce.matches) {
+        stop();
+        hero.style.setProperty("--p", "0");
+        resetWords();
+        return;
+      }
+      if (active) return;
+      active = true;
+      lastP = -1;
+      /* Dim every word until the scroll reveal lights it up. */
+      words.forEach((w) => (w.style.opacity = "0.08"));
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      /* visualViewport fires on iOS URL-bar show/hide without a window resize. */
+      window.visualViewport?.addEventListener("resize", onScroll, {
+        passive: true,
+      });
+      measure();
+    };
+
+    sync();
+    const onChange = () => sync();
+    mqReduce.addEventListener?.("change", onChange);
+
+    return () => {
+      stop();
+      window.visualViewport?.removeEventListener("resize", onScroll);
+      mqReduce.removeEventListener?.("change", onChange);
+    };
+  }, []);
+}
+
+/* ─── ECOSYSTEM SCROLLYTELLING (pinned core zoom → sequential node reveal) ─── */
+function useEcosystemScroll() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const track = document.querySelector(".os-eco-track");
+    const section = document.querySelector(".os-ecosystem");
+    if (!track || !section) return;
+
+    const center = section.querySelector(".os-eco-center");
+    const ring = section.querySelector(".os-eco-ring");
+    const nodes = Array.from(section.querySelectorAll(".os-eco-node"));
+    const spokes = Array.from(section.querySelectorAll(".os-eco-line"));
+    if (!nodes.length) return;
+
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    /* Reveal choreography (fractions of scroll progress):
+       core zoom → ring → eight nodes spread across the middle of the track. */
+    const CORE_AT = 0.05;
+    const RING_AT = 0.16;
+    const NODES_START = 0.22;
+    const NODES_END = 0.9;
+    const step = (NODES_END - NODES_START) / nodes.length;
+
+    let raf = null;
+    let lastP = -1;
+    let active = false;
+
+    const apply = (p) => {
+      if (center) center.classList.toggle("os-lit", p >= CORE_AT);
+      if (ring) ring.classList.toggle("os-lit", p >= RING_AT);
+
+      let activeIdx = -1;
+      for (let i = 0; i < nodes.length; i++) {
+        const start = NODES_START + i * step;
+        const lit = p >= start;
+        nodes[i].classList.toggle("os-lit", lit);
+        if (lit) activeIdx = i;
+
+        const spoke = spokes[i];
+        if (spoke) {
+          const drawn = p >= start + step * 0.35;
+          spoke.classList.toggle("os-drawn", drawn);
+          /* Inline dash offset (transition handles the draw) — beats the
+             marching-dash fallback only while we're live. */
+          spoke.style.strokeDashoffset = drawn ? "0" : spoke.dataset.osLen;
+        }
+      }
+      for (let i = 0; i < nodes.length; i++) {
+        nodes[i].classList.toggle("os-eco-active", i === activeIdx);
+      }
+    };
+
+    const measure = () => {
+      raf = null;
+      const rect = track.getBoundingClientRect();
+      const total = rect.height - section.offsetHeight;
+      const p = clamp01(total > 0 ? -rect.top / total : 0);
+      if (Math.abs(p - lastP) < 0.0008) return;
+      lastP = p;
+      apply(p);
+    };
+
+    const onScroll = () => {
+      if (raf == null) raf = requestAnimationFrame(measure);
+    };
+
+    const stop = () => {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.visualViewport?.removeEventListener("resize", onScroll);
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+    };
+
+    const sync = () => {
+      if (mqReduce.matches) {
+        /* Static fallback: unpin (CSS), everything visible, no live gating. */
+        stop();
+        section.classList.remove("os-eco-live");
+        return;
+      }
+      if (active) return;
+      active = true;
+      lastP = -1;
+      /* Prime each spoke's dash so it can draw on cue. */
+      spokes.forEach((line) => {
+        const len =
+          typeof line.getTotalLength === "function" ? line.getTotalLength() : 0;
+        line.dataset.osLen = String(len);
+        line.style.strokeDasharray = String(len);
+        line.style.strokeDashoffset = String(len);
+      });
+      section.classList.add("os-eco-live");
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      window.visualViewport?.addEventListener("resize", onScroll, {
+        passive: true,
+      });
+      measure();
+    };
+
+    sync();
+    const onChange = () => sync();
+    mqReduce.addEventListener?.("change", onChange);
+
+    return () => {
+      stop();
+      mqReduce.removeEventListener?.("change", onChange);
+    };
+  }, []);
+}
+
+/* ─── VISION PILLS HORIZONTAL SCROLLYTELLING (pinned, scrubbed carousel) ─── */
+function useVisionScroll() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const track = document.querySelector(".os-vision-track");
+    const section = document.querySelector(".os-vision");
+    const viewport = section?.querySelector(".os-kw-viewport");
+    const row = section?.querySelector(".os-kw-row");
+    if (!track || !section || !viewport || !row) return;
+
+    const pills = Array.from(row.querySelectorAll(".os-kw"));
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    let raf = null;
+    let active = false;
+    let curX = 0; // smoothed (lerped) translate
+    let targetX = 0; // scroll-derived target translate
+    let maxX = 0; // distance from first-pill-centred to last-pill-centred
+    let firstC = 0; // first pill centre offset within the row (px)
+
+    /* Reach the final (last-pill-centred) frame by 90% of the track, then
+       hold it there for the last 10% before the pin releases — so the last
+       pill visibly settles in the centre before the next section takes over. */
+    const HOLD = 0.9;
+
+    /* Measure the row so the FIRST pill is centred at translateX = -firstC and
+       the LAST pill is centred at the end. Padding = half the viewport minus
+       half the end pill, so the strip is never clipped on either edge. */
+    const relayout = () => {
+      const vpW = viewport.clientWidth;
+      const first = pills[0];
+      const last = pills[pills.length - 1];
+      const padL = Math.max(16, vpW / 2 - first.offsetWidth / 2);
+      const padR = Math.max(16, vpW / 2 - last.offsetWidth / 2);
+      row.style.paddingLeft = `${padL}px`;
+      row.style.paddingRight = `${padR}px`;
+      firstC = first.offsetLeft + first.offsetWidth / 2;
+      const lastC = last.offsetLeft + last.offsetWidth / 2;
+      maxX = Math.max(0, lastC - firstC);
+    };
+
+    /* Center-focus: scale + brighten pills by distance from the viewport
+       centre, and flag the centre-most pill as active. */
+    const paint = () => {
+      /* Padding already centres the first pill at curX = 0; the row then
+         scrubs left to -maxX, centring the last pill at the end. */
+      row.style.transform = `translate3d(${curX.toFixed(2)}px,0,0)`;
+      const vpRect = viewport.getBoundingClientRect();
+      const center = vpRect.left + vpRect.width / 2;
+      const reach = vpRect.width * 0.42 || 1;
+      let bestI = -1;
+      let bestDist = Infinity;
+      for (let i = 0; i < pills.length; i++) {
+        const r = pills[i].getBoundingClientRect();
+        const dist = Math.abs(r.left + r.width / 2 - center);
+        const norm = clamp01(dist / reach);
+        pills[i].style.setProperty("--os-foc", (1 - norm).toFixed(3));
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestI = i;
+        }
+      }
+      for (let i = 0; i < pills.length; i++) {
+        pills[i].classList.toggle("os-kw-active", i === bestI);
+      }
+    };
+
+    const computeTarget = () => {
+      const rect = track.getBoundingClientRect();
+      const total = rect.height - section.offsetHeight;
+      const p = clamp01(total > 0 ? -rect.top / total : 0);
+      const pp = clamp01(p / HOLD); // centre the last pill by 90%, then hold
+      targetX = -pp * maxX;
+    };
+
+    const loop = () => {
+      /* Ease toward target — the lag gives the premium Apple-style glide. */
+      curX += (targetX - curX) * 0.1;
+      if (Math.abs(targetX - curX) < 0.25) curX = targetX;
+      paint();
+      if (curX !== targetX) {
+        raf = requestAnimationFrame(loop);
+      } else {
+        raf = null;
+      }
+    };
+
+    const kick = () => {
+      computeTarget();
+      if (raf == null) raf = requestAnimationFrame(loop);
+    };
+
+    const onResize = () => {
+      relayout();
+      kick();
+    };
+
+    const stop = () => {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", kick);
+      window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+      row.style.transform = "";
+      row.style.paddingLeft = "";
+      row.style.paddingRight = "";
+      pills.forEach((p) => {
+        p.style.removeProperty("--os-foc");
+        p.classList.remove("os-kw-active");
+      });
+    };
+
+    const sync = () => {
+      if (mqReduce.matches) {
+        stop();
+        section.classList.remove("os-vision-live");
+        return;
+      }
+      if (active) return;
+      active = true;
+      section.classList.add("os-vision-live");
+      relayout();
+      computeTarget();
+      curX = targetX; // snap on first paint — no entry jump
+      paint();
+      window.addEventListener("scroll", kick, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
+      window.visualViewport?.addEventListener("resize", onResize, {
+        passive: true,
+      });
+    };
+
+    sync();
+    const onChange = () => sync();
+    mqReduce.addEventListener?.("change", onChange);
+
+    return () => {
+      stop();
+      mqReduce.removeEventListener?.("change", onChange);
+    };
   }, []);
 }
 
@@ -1466,55 +1841,74 @@ const DARK_SVG_IDX = new Set([1, 3, 5, 7]);
    SECTION COMPONENTS
 ═══════════════════════════════════ */
 
+const HERO_PARAGRAPH =
+  "Odiseus helps businesses design, modernise, automate, secure, and scale their digital operations through specialist software, cloud, DevOps, AI, and business analysis services.";
+
 function HeroSection() {
   return (
-    <section className="os-hero" aria-labelledby="os-hero-h1">
-      <div className="os-hero-grid" aria-hidden="true" />
-      <div className="os-hero-nodes" aria-hidden="true">
-        {HERO_NODES.map((n, i) => (
-          <div
-            key={i}
-            className="os-hero-node"
-            style={{
-              left: n.left,
-              top: n.top,
-              width: n.size,
-              height: n.size,
-              animationDelay: n.delay,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="os-hero-content">
-        {/* <span className="os-hero-eyebrow">Odiseus Software · Cloud</span> */}
-        <h1 id="os-hero-h1">
-          Engineering <em>Cloud, AI,</em>
-          <br />
-          and Software Systems
-          <br />
-          That Scale
-        </h1>
-        <p className="os-hero-sub">
-          Odiseus helps businesses design, modernise, automate, secure, and
-          scale their digital operations through specialist software, cloud,
-          DevOps, AI, and business analysis services.
-        </p>
-        <div className="os-hero-btns">
-          <a href="/cloud" className="os-btn-primary">
-            Explore Cloud Services
-          </a>
-          <a href="mailto:hr@odiseussoftware.com" className="os-btn-ghost">
-            Start a Conversation
-          </a>
+    /* Tall track gives the pinned hero room to play its scroll story. */
+    <div className="os-hero-scroll">
+      <section className="os-hero" aria-labelledby="os-hero-h1">
+        {/* Perspective star-field — three depth layers that warp toward the
+            viewer as the page scrolls, driven by the --p CSS variable. */}
+        <div className="os-hero-warp" aria-hidden="true">
+          <div className="os-hero-warp-layer os-hero-warp-l1" />
+          <div className="os-hero-warp-layer os-hero-warp-l2" />
+          <div className="os-hero-warp-layer os-hero-warp-l3" />
         </div>
-      </div>
 
-      <div className="os-scroll-hint" aria-hidden="true">
-        <span className="os-scroll-hint-label"></span>
-        <span className="os-scroll-hint-bar" />
-      </div>
-    </section>
+        <div className="os-hero-grid" aria-hidden="true" />
+        <div className="os-hero-nodes" aria-hidden="true">
+          {HERO_NODES.map((n, i) => (
+            <div
+              key={i}
+              className="os-hero-node"
+              style={{
+                left: n.left,
+                top: n.top,
+                width: n.size,
+                height: n.size,
+                animationDelay: n.delay,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="os-hero-content">
+          {/* <span className="os-hero-eyebrow">Odiseus Software · Cloud</span> */}
+          <h1 id="os-hero-h1">
+            Engineering <em>Cloud, AI,</em>
+            <br />
+            and Software Systems
+            <br />
+            That Scale
+          </h1>
+          {/* Full sentence kept on aria-label; words are written in on scroll. */}
+          <p className="os-hero-sub" aria-label={HERO_PARAGRAPH}>
+            {HERO_PARAGRAPH.split(" ").map((word, i) => (
+              <Fragment key={i}>
+                <span className="os-hero-word" aria-hidden="true">
+                  {word}
+                </span>{" "}
+              </Fragment>
+            ))}
+          </p>
+          <div className="os-hero-btns">
+            <a href="/cloud" className="os-btn-primary">
+              Explore Cloud Services
+            </a>
+            <a href="mailto:hr@odiseussoftware.com" className="os-btn-ghost">
+              Start a Conversation
+            </a>
+          </div>
+        </div>
+
+        <div className="os-scroll-hint" aria-hidden="true">
+          <span className="os-scroll-hint-label"></span>
+          <span className="os-scroll-hint-bar" />
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -1535,34 +1929,46 @@ const KEYWORDS = [
 
 function VisionSection() {
   return (
-    <section className="os-vision">
-      <div className="os-vision-inner">
-        <span className="os-eyebrow" data-os-reveal>
-          What we do
-        </span>
-        <h2 className="os-h2" data-os-reveal>
-          Boutique. Senior. <em>Specialist.</em>
-        </h2>
-        <p className="os-vision-sub" data-os-reveal>
-          We are a specialist technology partner — not a body shop, not a
-          generalist firm. Every engagement is led by senior practitioners who
-          have delivered at scale in exactly the discipline you need.
-        </p>
-        <div className="os-keywords" data-os-reveal>
-          {KEYWORDS.map((kw) => (
-            <span key={kw.label} className={`os-kw${kw.hi ? " os-kw-hi" : ""}`}>
-              {kw.label}
-            </span>
-          ))}
+    /* Tall track pins the section while the pills scrub horizontally. */
+    <div className="os-vision-track">
+      <section className="os-vision">
+        <div className="os-vision-inner">
+          <span className="os-eyebrow" data-os-reveal>
+            What we do
+          </span>
+          <h2 className="os-h2" data-os-reveal>
+            Boutique. Senior. <em>Specialist.</em>
+          </h2>
+          <p className="os-vision-sub" data-os-reveal>
+            We are a specialist technology partner — not a body shop, not a
+            generalist firm. Every engagement is led by senior practitioners who
+            have delivered at scale in exactly the discipline you need.
+          </p>
         </div>
-      </div>
-    </section>
+
+        {/* Full-bleed carousel — the row translates on vertical scroll. */}
+        <div className="os-kw-viewport" data-os-reveal>
+          <div className="os-kw-row">
+            {KEYWORDS.map((kw) => (
+              <span
+                key={kw.label}
+                className={`os-kw${kw.hi ? " os-kw-hi" : ""}`}
+              >
+                {kw.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
 function EcosystemMapSection() {
   return (
-    <section className="os-ecosystem" aria-labelledby="os-eco-h2">
+    /* Tall track pins the section while the brand core + nodes reveal. */
+    <div className="os-eco-track">
+      <section className="os-ecosystem" aria-labelledby="os-eco-h2">
       <div className="os-ecosystem-inner">
         <span className="os-eyebrow" data-os-reveal>
           Service Ecosystem
@@ -1583,6 +1989,7 @@ function EcosystemMapSection() {
           >
             {/* Orbit guide ring */}
             <circle
+              className="os-eco-ring"
               cx="490"
               cy="300"
               r="240"
@@ -1605,53 +2012,55 @@ function EcosystemMapSection() {
               />
             ))}
 
-            {/* ── Center node ── */}
-            <circle
-              cx="490"
-              cy="300"
-              r="72"
-              fill="rgba(26,78,255,0.08)"
-              stroke="rgba(26,78,255,0.4)"
-              strokeWidth="1.5"
-            />
-            <circle
-              cx="490"
-              cy="300"
-              r="52"
-              fill="rgba(26,78,255,0.16)"
-              stroke="#1a4eff"
-              strokeWidth="1.5"
-            >
-              <animate
-                attributeName="r"
-                values="52;56;52"
-                dur="4s"
-                repeatCount="indefinite"
+            {/* ── Center node (zooms in from depth first) ── */}
+            <g className="os-eco-center">
+              <circle
+                cx="490"
+                cy="300"
+                r="72"
+                fill="rgba(26,78,255,0.08)"
+                stroke="rgba(26,78,255,0.4)"
+                strokeWidth="1.5"
               />
-            </circle>
-            <text
-              x="490"
-              y="294"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize="24"
-              fontFamily="Instrument Serif, serif"
-              fontStyle="italic"
-              fill="#ffffff"
-            >
-              odiseus
-            </text>
-            <text
-              x="490"
-              y="316"
-              textAnchor="middle"
-              fontSize="9"
-              fontFamily="Geist Mono, monospace"
-              fill="rgba(255,255,255,0.38)"
-              letterSpacing="0.12em"
-            >
-              SOFTWARE
-            </text>
+              <circle
+                cx="490"
+                cy="300"
+                r="52"
+                fill="rgba(26,78,255,0.16)"
+                stroke="#1a4eff"
+                strokeWidth="1.5"
+              >
+                <animate
+                  attributeName="r"
+                  values="52;56;52"
+                  dur="4s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <text
+                x="490"
+                y="294"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize="24"
+                fontFamily="Instrument Serif, serif"
+                fontStyle="italic"
+                fill="#ffffff"
+              >
+                odiseus
+              </text>
+              <text
+                x="490"
+                y="316"
+                textAnchor="middle"
+                fontSize="9"
+                fontFamily="Geist Mono, monospace"
+                fill="rgba(255,255,255,0.38)"
+                letterSpacing="0.12em"
+              >
+                SOFTWARE
+              </text>
+            </g>
 
             {/* ── Satellite nodes ── */}
             {ECOSYSTEM_NODES.map((node, i) => {
@@ -1661,8 +2070,17 @@ function EcosystemMapSection() {
               const labelY = twoLine ? node.cy - 14 : node.cy - 5;
               const indexY = twoLine ? node.cy + 22 : node.cy + 16;
 
+              /* Start the reveal pulled ~30% back toward the brand core so
+                 each node slides outward into its final orbital slot. */
+              const tx = (-(node.cx - 490) * 0.3).toFixed(1);
+              const ty = (-(node.cy - 300) * 0.3).toFixed(1);
+
               return (
-                <g key={`eco-node-${i}`}>
+                <g
+                  key={`eco-node-${i}`}
+                  className="os-eco-node"
+                  style={{ "--os-tx": `${tx}px`, "--os-ty": `${ty}px` }}
+                >
                   {/* Outer halo */}
                   <circle
                     cx={node.cx}
@@ -1674,6 +2092,7 @@ function EcosystemMapSection() {
                   />
                   {/* Inner pulsing circle */}
                   <circle
+                    className="os-eco-core"
                     cx={node.cx}
                     cy={node.cy}
                     r="38"
@@ -1738,7 +2157,8 @@ function EcosystemMapSection() {
           </svg>
         </div>
       </div>
-    </section>
+      </section>
+    </div>
   );
 }
 
@@ -2223,6 +2643,9 @@ export default function OdiseusStoryClient() {
   useCountUp();
   useCloudCursor();
   useAdaptiveNav();
+  useHeroScroll();
+  useEcosystemScroll();
+  useVisionScroll();
 
   return (
     <>

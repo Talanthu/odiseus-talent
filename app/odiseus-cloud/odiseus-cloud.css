@@ -98,9 +98,24 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   cursor: none !important;
 }
 
-/* ─── HERO ─── */
+/* ─── HERO (Apple-style pinned scrollytelling) ─── */
+/* Outer track: its height is the scroll distance the pinned hero plays over.
+   svh keeps the math stable on mobile (immune to URL-bar resize); vh is the
+   fallback for older engines. Dark base hides any sliver below the pin. */
+.os-hero-scroll {
+  position: relative;
+  height: 320vh;
+  height: 320svh;
+  background: var(--ink);
+}
+
 .os-hero {
-  min-height: 110vh;
+  /* Default --p (scroll progress 0→1) so SSR / no-JS render is sane. */
+  --p: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
   background:
     radial-gradient(
       ellipse 90% 65% at 50% 35%,
@@ -108,13 +123,65 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
       transparent 65%
     ),
     var(--ink);
-  position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 82px 2.5rem 4rem;
+}
+
+/* ─── STAR-FIELD WARP ─── */
+.os-hero-warp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.os-hero-warp-layer {
+  position: absolute;
+  inset: -60%;
+  transform-origin: 50% 50%;
+  will-change: transform, opacity;
+  background-repeat: repeat;
+}
+
+/* Far layer — small, dense dots, gentle drift toward viewer. */
+.os-hero-warp-l1 {
+  background-image: radial-gradient(
+    circle,
+    rgba(26, 78, 255, 0.5) 1px,
+    transparent 1.6px
+  );
+  background-size: 64px 64px;
+  transform: scale(calc(1 + var(--p) * 1.6));
+  opacity: calc(0.22 + var(--p) * 0.35);
+}
+
+/* Mid layer — accelerates faster, brighter. */
+.os-hero-warp-l2 {
+  background-image: radial-gradient(
+    circle,
+    rgba(120, 160, 255, 0.55) 1.4px,
+    transparent 2px
+  );
+  background-size: 120px 120px;
+  transform: scale(calc(1 + var(--p) * 3));
+  opacity: calc(0.14 + var(--p) * 0.5);
+}
+
+/* Near layer — rushes past the viewer; invisible at rest, blooms on scroll. */
+.os-hero-warp-l3 {
+  background-image: radial-gradient(
+    circle,
+    rgba(180, 205, 255, 0.7) 1.8px,
+    transparent 2.6px
+  );
+  background-size: 190px 190px;
+  transform: scale(calc(1 + var(--p) * 5.5));
+  opacity: calc(var(--p) * 0.65);
 }
 
 .os-hero-grid {
@@ -175,6 +242,12 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   z-index: 2;
   text-align: center;
   max-width: 940px;
+  /* Scroll parallax: drift up + recede slightly, then release (fade) at the
+     end of the track so the next section can take over smoothly. */
+  transform: translateY(calc(var(--p) * -5vh)) scale(calc(1 - var(--p) * 0.05));
+  transform-origin: 50% 45%;
+  opacity: calc(1 - (var(--p) - 0.82) * 5.5);
+  will-change: transform, opacity;
 }
 
 .os-hero-eyebrow {
@@ -224,8 +297,17 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   line-height: 1.78;
   max-width: 680px;
   margin: 0 auto 3rem;
-  opacity: 0;
-  animation: os-slide-up 0.9s ease forwards 0.6s;
+}
+
+/* Each word is written in on scroll (opacity / lift / de-blur set by JS).
+   Default opacity:1 keeps SSR + reduced-motion + mobile fully legible. */
+.os-hero-word {
+  display: inline-block;
+  will-change: opacity, transform, filter;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease,
+    filter 0.12s ease;
 }
 
 .os-hero-btns {
@@ -304,8 +386,9 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
-  opacity: 0;
-  animation: os-slide-up 1s ease forwards 1.2s;
+  z-index: 2;
+  /* Fades out as soon as the warp/story begins. */
+  opacity: calc(0.8 - var(--p) * 4);
 }
 
 .os-scroll-hint-label {
@@ -374,15 +457,32 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
 }
 
 /* ─── VISION ─── */
+/* Pinned scrollytelling track — height = the horizontal scrub distance. */
+.os-vision-track {
+  position: relative;
+  background: var(--paper);
+  height: 300vh;
+  height: 300svh;
+}
+
 .os-vision {
   background: var(--paper);
-  padding: 9rem 2.5rem;
   text-align: center;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 0 4rem;
+  overflow: hidden;
 }
 
 .os-vision-inner {
   max-width: 880px;
   margin: 0 auto;
+  padding: 0 2.5rem;
 }
 
 .os-vision .os-h2 {
@@ -396,14 +496,38 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   color: var(--muted);
   line-height: 1.78;
   max-width: 620px;
-  margin: 0 auto 3.5rem;
+  margin: 0 auto;
 }
 
-.os-keywords {
+/* Full-bleed viewport clips the horizontally travelling pill row.
+   Vertical padding gives the scaled centre pill + its glow room so it is
+   never cropped top/bottom — overflow only needs to clip the strip on X,
+   and the padding area is exempt from the clip. */
+.os-kw-viewport {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 2.75rem 0;
+  overflow: hidden;
+}
+
+/* Default (no-JS / reduced motion): a clean centred, wrapping tag cloud. */
+.os-kw-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
   justify-content: center;
+  padding: 0 2.5rem;
+}
+
+/* Live carousel: one nowrap row that scrubs on scroll. JS sets the exact
+   left/right padding so the first pill starts centred and the last ends
+   centred — never clipped on either edge. */
+.os-vision-live .os-kw-row {
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: 1.1rem;
+  padding: 0;
+  will-change: transform;
 }
 
 .os-kw {
@@ -436,17 +560,64 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   transform: translateY(-2px);
 }
 
+/* ─── LIVE PILL FOCUS (centre pill scales up + brightens) ───
+   --os-foc is written by JS each frame: 1 at the viewport centre, 0 at edges.
+   Scale/opacity track it directly (smoothed by the JS lerp); colour states
+   transition for a premium feel. Opacity floor stays high so EVERY pill
+   remains readable, not just the centred one. */
+.os-vision-live .os-kw {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  padding: 0.68rem 1.4rem;
+  transform: scale(calc(0.92 + var(--os-foc, 0) * 0.14));
+  opacity: calc(0.62 + var(--os-foc, 0) * 0.38);
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.os-vision-live .os-kw:hover {
+  transform: scale(calc(0.94 + var(--os-foc, 0) * 0.14));
+}
+
+/* The centre-most pill — identical to a normal pill, only a blue border,
+   blue text, and a soft glow for subtle emphasis. No fill, no ring. */
+.os-vision-live .os-kw.os-kw-active {
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: 0 4px 18px rgba(26, 78, 255, 0.16);
+}
+
 /* ─── ECOSYSTEM MAP ─── */
+/* Pinned scrollytelling track — its height is the scroll distance. */
+.os-eco-track {
+  position: relative;
+  background: var(--ink);
+  height: 460vh;
+  height: 460svh;
+}
+
 .os-ecosystem {
   background: var(--ink);
-  padding: 9rem 2.5rem;
   text-align: center;
   overflow: hidden;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 100px 2.5rem 4rem;
 }
 
 .os-ecosystem-inner {
   max-width: 1000px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .os-ecosystem .os-h2 {
@@ -459,7 +630,7 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.42);
   max-width: 480px;
-  margin: 0 auto 4rem;
+  margin: 0 auto 2.5rem;
 }
 
 /* Scroll wrapper — enables horizontal scroll on narrow viewports */
@@ -473,6 +644,7 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   width: 100%;
   max-width: 960px;
   min-width: 680px; /* prevent shrinking so labels stay readable */
+  max-height: 62vh; /* fit beneath the heading inside the pinned frame */
   display: block;
   margin: 0 auto;
 }
@@ -488,6 +660,82 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   to {
     stroke-dashoffset: -130;
   }
+}
+
+/* ─── ECOSYSTEM LIVE REVEAL (only while JS scrollytelling is active) ───
+   Hidden/depth states are gated behind .os-eco-live so SSR, no-JS, and
+   reduced-motion all render the full diagram normally. */
+.os-eco-live .os-eco-center,
+.os-eco-live .os-eco-node {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Brand core — perspective zoom-in from depth. */
+.os-eco-live .os-eco-center {
+  opacity: 0;
+  transform: scale(0.18);
+  filter: blur(6px);
+  transition:
+    opacity 0.9s ease,
+    transform 1.1s cubic-bezier(0.16, 0.84, 0.24, 1),
+    filter 0.9s ease;
+}
+.os-eco-live .os-eco-center.os-lit {
+  opacity: 1;
+  transform: scale(1);
+  filter: blur(0);
+}
+
+/* Orbit guide ring fades in once the core has settled. */
+.os-eco-live .os-eco-ring {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.os-eco-live .os-eco-ring.os-lit {
+  opacity: 1;
+}
+
+/* Satellite nodes — slide out from the core, scale + de-blur into place. */
+.os-eco-live .os-eco-node {
+  opacity: 0;
+  transform: translate(var(--os-tx, 0), var(--os-ty, 0)) scale(0.35);
+  filter: blur(4px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.95s cubic-bezier(0.2, 0.7, 0.2, 1),
+    filter 0.7s ease;
+}
+.os-eco-live .os-eco-node.os-lit {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
+  filter: blur(0);
+}
+
+/* Active/focus state — the most recently revealed service. */
+.os-eco-live .os-eco-node.os-eco-active {
+  transform: translate(0, 0) scale(1.07);
+}
+.os-eco-live .os-eco-node.os-eco-active .os-eco-core {
+  stroke: #1a4eff;
+  fill: rgba(26, 78, 255, 0.22);
+  filter: drop-shadow(0 0 10px rgba(26, 78, 255, 0.85));
+  transition:
+    stroke 0.4s ease,
+    fill 0.4s ease,
+    filter 0.4s ease;
+}
+
+/* Connector spokes — draw in after their node appears (JS sets dashoffset). */
+.os-eco-live .os-eco-line {
+  opacity: 0;
+  animation: none;
+  transition:
+    stroke-dashoffset 0.8s cubic-bezier(0.3, 0.7, 0.2, 1),
+    opacity 0.4s ease;
+}
+.os-eco-live .os-eco-line.os-drawn {
+  opacity: 1;
 }
 
 /* ─── SERVICE SECTIONS ─── */
@@ -1024,6 +1272,23 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 1080px) {
+  /* Tablet: keep the pin, slightly shorter scroll track. */
+  .os-hero-scroll {
+    height: 290vh;
+    height: 290svh;
+  }
+  .os-hero {
+    padding: 82px 2rem 4rem;
+  }
+  .os-eco-track {
+    height: 420vh;
+    height: 420svh;
+  }
+  .os-vision-track {
+    height: 280vh;
+    height: 280svh;
+  }
+
   .os-svc-inner {
     grid-template-columns: 1fr;
     gap: 3rem;
@@ -1068,8 +1333,64 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
 }
 
 @media (max-width: 768px) {
+  /* Mobile: keep the pinned scrollytelling — just give it a shorter track so
+     it doesn't drag, tighter padding, and a warp tuned for a smaller canvas. */
+  .os-hero-scroll {
+    height: 260vh;
+    height: 260svh;
+  }
   .os-hero {
-    padding: 82px 1.8rem 4rem;
+    padding: 76px 1.5rem 3rem;
+  }
+  .os-hero-content {
+    max-width: 100%;
+  }
+  /* Smaller-canvas warp: dots a touch larger, zoom a little gentler. */
+  .os-hero-warp-l1 {
+    background-size: 48px 48px;
+  }
+  .os-hero-warp-l2 {
+    background-size: 86px 86px;
+    transform: scale(calc(1 + var(--p) * 2.4));
+  }
+  .os-hero-warp-l3 {
+    background-size: 132px 132px;
+    transform: scale(calc(1 + var(--p) * 4.2));
+  }
+
+  /* Ecosystem: shorter track + fit the whole diagram to the viewport width so
+     the reveal plays without needing to pan horizontally inside the pin. */
+  .os-eco-track {
+    height: 360vh;
+    height: 360svh;
+  }
+  .os-ecosystem {
+    padding: 88px 1.25rem 2.5rem;
+  }
+  .os-eco-scroll {
+    overflow-x: hidden;
+  }
+  .os-eco-svg {
+    min-width: 0;
+    max-width: 100%;
+    max-height: 56vh;
+  }
+
+  /* Vision pills: shorter track, tighter pills + spacing for the small canvas. */
+  .os-vision-track {
+    height: 240vh;
+    height: 240svh;
+  }
+  .os-kw-viewport {
+    margin-top: 0.75rem;
+    padding: 2.25rem 0;
+  }
+  .os-vision-live .os-kw-row {
+    gap: 0.8rem;
+  }
+  .os-vision-live .os-kw {
+    font-size: 0.72rem;
+    padding: 0.6rem 1.15rem;
   }
 
   .os-svc-cards {
@@ -1096,6 +1417,32 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
 }
 
 @media (max-width: 560px) {
+  /* Small phones: shrink the hero type + chrome so a full 100svh frame holds
+     the headline, the revealing paragraph, and the CTAs without overflow. */
+  .os-hero-scroll {
+    height: 240vh;
+    height: 240svh;
+  }
+  .os-hero {
+    padding: 70px 1.25rem 2.5rem;
+  }
+  .os-hero h1 {
+    font-size: clamp(2.3rem, 11vw, 3.2rem);
+    margin-bottom: 1.4rem;
+  }
+  .os-hero-sub {
+    font-size: 0.92rem;
+    line-height: 1.62;
+    margin-bottom: 2rem;
+  }
+  .os-hero-btns {
+    gap: 0.7rem;
+  }
+  .os-hero-btns .os-btn-primary,
+  .os-hero-btns .os-btn-ghost {
+    padding: 0.8rem 1.5rem;
+  }
+
   .os-svc-section {
     padding: 5rem 1.5rem;
   }
@@ -1108,14 +1455,31 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
   .os-journey-track {
     grid-template-columns: 1fr 1fr;
   }
-  .os-eco-scroll {
-    /* Show a subtle scroll-hint shadow so users know it's scrollable */
-    box-shadow: inset -24px 0 16px -8px rgba(0, 0, 0, 0.35);
+  .os-eco-track {
+    height: 320vh;
+    height: 320svh;
   }
   .os-eco-svg {
-    max-width: none; /* let min-width rule; container scrolls */
+    /* Fit the full orbit to the screen — the reveal is the focus, not panning. */
+    min-width: 0;
+    max-width: 100%;
+    max-height: 52vh;
   }
-  .os-vision,
+  /* Vision carousel stays full-bleed; only the header inset matters here. */
+  .os-vision-track {
+    height: 220vh;
+    height: 220svh;
+  }
+  .os-vision-inner {
+    padding: 0 1.5rem;
+  }
+  .os-vision-live .os-kw-row {
+    gap: 0.65rem;
+  }
+  .os-vision-live .os-kw {
+    font-size: 0.7rem;
+    padding: 0.55rem 1rem;
+  }
   .os-ecosystem,
   .os-devops,
   .os-ai,
@@ -1150,5 +1514,56 @@ body.os-cursor-on *:not(.os-c-ring):not(.os-c-cloud) {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  /* Reduced motion: no pin, no warp, full static text. JS bails to static. */
+  .os-hero-scroll {
+    height: auto;
+  }
+  .os-hero {
+    position: static;
+    height: auto;
+    min-height: 100vh;
+  }
+  .os-hero-content {
+    transform: none;
+    opacity: 1;
+  }
+  .os-hero-warp-layer {
+    transform: none;
+    opacity: 0.25;
+  }
+  .os-hero-word {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  /* Ecosystem: no pin, full static diagram (JS skips the live reveal). */
+  .os-eco-track {
+    height: auto;
+  }
+  .os-ecosystem {
+    position: static;
+    height: auto;
+    min-height: 0;
+    padding: 9rem 2.5rem;
+  }
+
+  /* Vision pills: no pin, no carousel — fall back to the centred tag cloud. */
+  .os-vision-track {
+    height: auto;
+  }
+  .os-vision {
+    position: static;
+    height: auto;
+    min-height: 0;
+    padding: 9rem 2.5rem;
+  }
+  .os-kw-viewport {
+    overflow: visible;
+    margin-top: 3rem;
+    padding: 0;
   }
 }
