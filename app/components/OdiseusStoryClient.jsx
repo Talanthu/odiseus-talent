@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Fragment } from "react";
 
 /* ─── ADAPTIVE NAV (dark ↔ light glass based on scroll position) ─── */
 function useAdaptiveNav() {
@@ -11,7 +11,8 @@ function useAdaptiveNav() {
     /* Selectors for sections that have a dark background on the cloud page.
        Order matches the page layout:
        hero → ecosystem → journey → ai → cta-final → footer             */
-    const DARK = ".os-hero, .os-ecosystem, .os-journey, .os-ai, .os-cta-final, footer";
+    const DARK =
+      ".os-hero, .os-ecosystem, .os-svc-dark, .os-journey, .os-ai, .os-cta-final, footer";
 
     const update = () => {
       const navH = nav.offsetHeight || 82;
@@ -113,6 +114,442 @@ function useRevealObserver() {
       .forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
+  }, []);
+}
+
+/* ─── HERO SCROLLYTELLING (Apple-style pinned warp + word reveal) ─── */
+function useHeroScroll() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const wrap = document.querySelector(".os-hero-scroll");
+    const hero = document.querySelector(".os-hero");
+    if (!wrap || !hero) return;
+
+    const words = Array.from(hero.querySelectorAll(".os-hero-word"));
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    /* Paragraph reveal occupies the middle of the scroll track so the hero
+       has a moment to settle on entry and to release on exit. */
+    const WORD_START = 0.18;
+    const WORD_END = 0.82;
+
+    let raf = null;
+    let lastP = -1;
+    let active = false;
+
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    const resetWords = () => {
+      words.forEach((w) => {
+        w.style.opacity = "";
+        w.style.transform = "";
+        w.style.filter = "";
+      });
+    };
+
+    const apply = (p) => {
+      hero.style.setProperty("--p", p.toFixed(4));
+      const reveal =
+        ((p - WORD_START) / (WORD_END - WORD_START)) * words.length;
+      for (let i = 0; i < words.length; i++) {
+        const o = clamp01(reveal - i);
+        const w = words[i];
+        w.style.opacity = (0.08 + o * 0.92).toFixed(3);
+        w.style.transform = `translateY(${((1 - o) * 0.5).toFixed(3)}em)`;
+        w.style.filter = o < 1 ? `blur(${((1 - o) * 6).toFixed(2)}px)` : "none";
+      }
+    };
+
+    const measure = () => {
+      raf = null;
+      const rect = wrap.getBoundingClientRect();
+      /* Measure against the PINNED element's own height (not window.innerHeight)
+         so the progress math stays stable on iOS/Android as the URL bar grows
+         and shrinks — this is what prevents the scrub from jumping. */
+      const total = rect.height - hero.offsetHeight;
+      const p = clamp01(total > 0 ? -rect.top / total : 0);
+      if (Math.abs(p - lastP) < 0.0008) return;
+      lastP = p;
+      apply(p);
+    };
+
+    const onScroll = () => {
+      if (raf == null) raf = requestAnimationFrame(measure);
+    };
+
+    const stop = () => {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.visualViewport?.removeEventListener("resize", onScroll);
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+    };
+
+    const sync = () => {
+      /* Reduced motion is the only static fallback — the scrollytelling runs
+         on every viewport size (mobile, tablet, desktop). */
+      if (mqReduce.matches) {
+        stop();
+        hero.style.setProperty("--p", "0");
+        resetWords();
+        return;
+      }
+      if (active) return;
+      active = true;
+      lastP = -1;
+      /* Dim every word until the scroll reveal lights it up. */
+      words.forEach((w) => (w.style.opacity = "0.08"));
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      /* visualViewport fires on iOS URL-bar show/hide without a window resize. */
+      window.visualViewport?.addEventListener("resize", onScroll, {
+        passive: true,
+      });
+      measure();
+    };
+
+    sync();
+    const onChange = () => sync();
+    mqReduce.addEventListener?.("change", onChange);
+
+    return () => {
+      stop();
+      window.visualViewport?.removeEventListener("resize", onScroll);
+      mqReduce.removeEventListener?.("change", onChange);
+    };
+  }, []);
+}
+
+/* ─── ECOSYSTEM SCROLLYTELLING (pinned core zoom → sequential node reveal) ─── */
+function useEcosystemScroll() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const track = document.querySelector(".os-eco-track");
+    const section = document.querySelector(".os-ecosystem");
+    if (!track || !section) return;
+
+    const center = section.querySelector(".os-eco-center");
+    const ring = section.querySelector(".os-eco-ring");
+    const nodes = Array.from(section.querySelectorAll(".os-eco-node"));
+    const spokes = Array.from(section.querySelectorAll(".os-eco-line"));
+    if (!nodes.length) return;
+
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    /* Reveal choreography (fractions of scroll progress):
+       core zoom → ring → eight nodes spread across the middle of the track. */
+    const CORE_AT = 0.05;
+    const RING_AT = 0.16;
+    const NODES_START = 0.22;
+    const NODES_END = 0.9;
+    const step = (NODES_END - NODES_START) / nodes.length;
+
+    let raf = null;
+    let lastP = -1;
+    let active = false;
+
+    const apply = (p) => {
+      /* Shared progress for the cohesive text-out / infographic-in motion. */
+      section.style.setProperty("--ep", p.toFixed(4));
+      if (center) center.classList.toggle("os-lit", p >= CORE_AT);
+      if (ring) ring.classList.toggle("os-lit", p >= RING_AT);
+
+      let activeIdx = -1;
+      for (let i = 0; i < nodes.length; i++) {
+        const start = NODES_START + i * step;
+        const lit = p >= start;
+        nodes[i].classList.toggle("os-lit", lit);
+        if (lit) activeIdx = i;
+
+        const spoke = spokes[i];
+        if (spoke) {
+          const drawn = p >= start + step * 0.35;
+          spoke.classList.toggle("os-drawn", drawn);
+          /* Inline dash offset (transition handles the draw) — beats the
+             marching-dash fallback only while we're live. */
+          spoke.style.strokeDashoffset = drawn ? "0" : spoke.dataset.osLen;
+        }
+      }
+      for (let i = 0; i < nodes.length; i++) {
+        nodes[i].classList.toggle("os-eco-active", i === activeIdx);
+      }
+    };
+
+    const measure = () => {
+      raf = null;
+      const rect = track.getBoundingClientRect();
+      const total = rect.height - section.offsetHeight;
+      const p = clamp01(total > 0 ? -rect.top / total : 0);
+      if (Math.abs(p - lastP) < 0.0008) return;
+      lastP = p;
+      apply(p);
+    };
+
+    const onScroll = () => {
+      if (raf == null) raf = requestAnimationFrame(measure);
+    };
+
+    const stop = () => {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.visualViewport?.removeEventListener("resize", onScroll);
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+    };
+
+    const sync = () => {
+      if (mqReduce.matches) {
+        /* Static fallback: unpin (CSS), everything visible, no live gating. */
+        stop();
+        section.classList.remove("os-eco-live");
+        section.style.removeProperty("--ep");
+        return;
+      }
+      if (active) return;
+      active = true;
+      lastP = -1;
+      /* Prime each spoke's dash so it can draw on cue. */
+      spokes.forEach((line) => {
+        const len =
+          typeof line.getTotalLength === "function" ? line.getTotalLength() : 0;
+        line.dataset.osLen = String(len);
+        line.style.strokeDasharray = String(len);
+        line.style.strokeDashoffset = String(len);
+      });
+      section.classList.add("os-eco-live");
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
+      window.visualViewport?.addEventListener("resize", onScroll, {
+        passive: true,
+      });
+      measure();
+    };
+
+    sync();
+    const onChange = () => sync();
+    mqReduce.addEventListener?.("change", onChange);
+
+    return () => {
+      stop();
+      mqReduce.removeEventListener?.("change", onChange);
+    };
+  }, []);
+}
+
+/* ─── VISION PILLS HORIZONTAL SCROLLYTELLING (pinned, scrubbed carousel) ─── */
+function useVisionScroll() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const track = document.querySelector(".os-vision-track");
+    const section = document.querySelector(".os-vision");
+    const viewport = section?.querySelector(".os-kw-viewport");
+    const row = section?.querySelector(".os-kw-row");
+    if (!track || !section || !viewport || !row) return;
+
+    const pills = Array.from(row.querySelectorAll(".os-kw"));
+    const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const clamp01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
+
+    let raf = null;
+    let active = false;
+    let curX = 0; // smoothed (lerped) translate
+    let targetX = 0; // scroll-derived target translate
+    let maxX = 0; // distance from first-pill-centred to last-pill-centred
+    let firstC = 0; // first pill centre offset within the row (px)
+
+    /* Reach the final (last-pill-centred) frame by 90% of the track, then
+       hold it there for the last 10% before the pin releases — so the last
+       pill visibly settles in the centre before the next section takes over. */
+    const HOLD = 0.9;
+
+    /* Measure the row so the FIRST pill is centred at translateX = -firstC and
+       the LAST pill is centred at the end. Padding = half the viewport minus
+       half the end pill, so the strip is never clipped on either edge. */
+    const relayout = () => {
+      const vpW = viewport.clientWidth;
+      const first = pills[0];
+      const last = pills[pills.length - 1];
+      const padL = Math.max(16, vpW / 2 - first.offsetWidth / 2);
+      const padR = Math.max(16, vpW / 2 - last.offsetWidth / 2);
+      row.style.paddingLeft = `${padL}px`;
+      row.style.paddingRight = `${padR}px`;
+      firstC = first.offsetLeft + first.offsetWidth / 2;
+      const lastC = last.offsetLeft + last.offsetWidth / 2;
+      maxX = Math.max(0, lastC - firstC);
+    };
+
+    /* Center-focus: scale + brighten pills by distance from the viewport
+       centre, and flag the centre-most pill as active. */
+    const paint = () => {
+      /* Padding already centres the first pill at curX = 0; the row then
+         scrubs left to -maxX, centring the last pill at the end. */
+      row.style.transform = `translate3d(${curX.toFixed(2)}px,0,0)`;
+      const vpRect = viewport.getBoundingClientRect();
+      const center = vpRect.left + vpRect.width / 2;
+      const reach = vpRect.width * 0.42 || 1;
+      let bestI = -1;
+      let bestDist = Infinity;
+      for (let i = 0; i < pills.length; i++) {
+        const r = pills[i].getBoundingClientRect();
+        const dist = Math.abs(r.left + r.width / 2 - center);
+        const norm = clamp01(dist / reach);
+        pills[i].style.setProperty("--os-foc", (1 - norm).toFixed(3));
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestI = i;
+        }
+      }
+      for (let i = 0; i < pills.length; i++) {
+        pills[i].classList.toggle("os-kw-active", i === bestI);
+      }
+    };
+
+    const computeTarget = () => {
+      const rect = track.getBoundingClientRect();
+      const total = rect.height - section.offsetHeight;
+      const p = clamp01(total > 0 ? -rect.top / total : 0);
+      const pp = clamp01(p / HOLD); // centre the last pill by 90%, then hold
+      targetX = -pp * maxX;
+      /* Expose progress so the heading + pills can share one premium
+         zoom-out / fade-out exit (CSS reads --vp). */
+      section.style.setProperty("--vp", p.toFixed(4));
+    };
+
+    const loop = () => {
+      /* Ease toward target — the lag gives the premium Apple-style glide. */
+      curX += (targetX - curX) * 0.1;
+      if (Math.abs(targetX - curX) < 0.25) curX = targetX;
+      paint();
+      if (curX !== targetX) {
+        raf = requestAnimationFrame(loop);
+      } else {
+        raf = null;
+      }
+    };
+
+    const kick = () => {
+      computeTarget();
+      if (raf == null) raf = requestAnimationFrame(loop);
+    };
+
+    const onResize = () => {
+      relayout();
+      kick();
+    };
+
+    const stop = () => {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", kick);
+      window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
+      if (raf) {
+        cancelAnimationFrame(raf);
+        raf = null;
+      }
+      row.style.transform = "";
+      row.style.paddingLeft = "";
+      row.style.paddingRight = "";
+      section.style.removeProperty("--vp");
+      pills.forEach((p) => {
+        p.style.removeProperty("--os-foc");
+        p.classList.remove("os-kw-active");
+      });
+    };
+
+    const sync = () => {
+      if (mqReduce.matches) {
+        stop();
+        section.classList.remove("os-vision-live");
+        return;
+      }
+      if (active) return;
+      active = true;
+      section.classList.add("os-vision-live");
+      relayout();
+      computeTarget();
+      curX = targetX; // snap on first paint — no entry jump
+      paint();
+      window.addEventListener("scroll", kick, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
+      window.visualViewport?.addEventListener("resize", onResize, {
+        passive: true,
+      });
+    };
+
+    sync();
+    const onChange = () => sync();
+    mqReduce.addEventListener?.("change", onChange);
+
+    return () => {
+      stop();
+      mqReduce.removeEventListener?.("change", onChange);
+    };
+  }, []);
+}
+
+/* ─── SERVICE CHAPTERS (active focus + infographic assemble-in) ─── */
+function useServiceStory() {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const prefersReduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    /* Focus the chapter whose figure sits in the centre band of the viewport. */
+    const sections = Array.from(document.querySelectorAll(".os-svc-section"));
+    const activeObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) =>
+          e.target.classList.toggle("os-svc-on", e.isIntersecting),
+        );
+      },
+      { rootMargin: "-42% 0px -42% 0px", threshold: 0 },
+    );
+    sections.forEach((s) => activeObs.observe(s));
+
+    /* Infographics assemble themselves piece-by-piece as they enter — the
+       diagram "builds" rather than just fading in. Skipped for reduced motion
+       and gated behind a class so SSR / no-JS always show the full figure. */
+    let buildObs = null;
+    if (!prefersReduced) {
+      const svgs = Array.from(document.querySelectorAll(".os-svc-svg"));
+      svgs.forEach((svg) => {
+        Array.from(svg.children).forEach((child, i) => {
+          child.style.transitionDelay = `${Math.min(i, 14) * 55}ms`;
+        });
+        svg.classList.add("os-svc-build");
+      });
+      buildObs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("os-svc-built");
+              buildObs.unobserve(e.target);
+            }
+          });
+        },
+        { threshold: 0.25 },
+      );
+      svgs.forEach((svg) => buildObs.observe(svg));
+    }
+
+    return () => {
+      activeObs.disconnect();
+      buildObs?.disconnect();
+    };
   }, []);
 }
 
@@ -356,14 +793,14 @@ const HERO_NODES = [
    Positions: top → top-right → right → bottom-right →
               bottom → bottom-left → left → top-left  */
 const ECOSYSTEM_NODES = [
-  { cx: 490, cy: 60,  label: "CLOUD ENG",   sub: "Migration & Strategy" },
-  { cx: 660, cy: 130, label: "DEVOPS",       sub: "Platform & CI/CD"    },
-  { cx: 730, cy: 300, label: "AI",           sub: "ML & GenAI"          },
-  { cx: 660, cy: 470, label: "DATA",         sub: "Analytics & Lakes"   },
-  { cx: 490, cy: 540, label: "SECURITY",     sub: "CSPM & Compliance"   },
-  { cx: 320, cy: 470, label: "MANAGED OPS",  sub: "24×7 Observability"  },
-  { cx: 250, cy: 300, label: "APP MOD",      sub: "Modernization"       },
-  { cx: 320, cy: 130, label: "BIZ ANALYSIS", sub: "Strategy & Process"  },
+  { cx: 490, cy: 60, label: "CLOUD ENG", sub: "Migration & Strategy" },
+  { cx: 660, cy: 130, label: "DEVOPS", sub: "Platform & CI/CD" },
+  { cx: 730, cy: 300, label: "AI", sub: "ML & GenAI" },
+  { cx: 660, cy: 470, label: "DATA", sub: "Analytics & Lakes" },
+  { cx: 490, cy: 540, label: "SECURITY", sub: "CSPM & Compliance" },
+  { cx: 320, cy: 470, label: "MANAGED OPS", sub: "24×7 Observability" },
+  { cx: 250, cy: 300, label: "APP MOD", sub: "Modernization" },
+  { cx: 320, cy: 130, label: "BIZ ANALYSIS", sub: "Strategy & Process" },
 ];
 
 const JOURNEY_STEPS = [
@@ -1466,55 +1903,74 @@ const DARK_SVG_IDX = new Set([1, 3, 5, 7]);
    SECTION COMPONENTS
 ═══════════════════════════════════ */
 
+const HERO_PARAGRAPH =
+  "Odiseus helps businesses design, modernise, automate, secure, and scale their digital operations through specialist software, cloud, DevOps, AI, and business analysis services.";
+
 function HeroSection() {
   return (
-    <section className="os-hero" aria-labelledby="os-hero-h1">
-      <div className="os-hero-grid" aria-hidden="true" />
-      <div className="os-hero-nodes" aria-hidden="true">
-        {HERO_NODES.map((n, i) => (
-          <div
-            key={i}
-            className="os-hero-node"
-            style={{
-              left: n.left,
-              top: n.top,
-              width: n.size,
-              height: n.size,
-              animationDelay: n.delay,
-            }}
-          />
-        ))}
-      </div>
-
-      <div className="os-hero-content">
-        {/* <span className="os-hero-eyebrow">Odiseus Software · Cloud</span> */}
-        <h1 id="os-hero-h1">
-          Engineering <em>Cloud, AI,</em>
-          <br />
-          and Software Systems
-          <br />
-          That Scale
-        </h1>
-        <p className="os-hero-sub">
-          Odiseus helps businesses design, modernise, automate, secure, and
-          scale their digital operations through specialist software, cloud,
-          DevOps, AI, and business analysis services.
-        </p>
-        <div className="os-hero-btns">
-          <a href="/cloud" className="os-btn-primary">
-            Explore Cloud Services
-          </a>
-          <a href="mailto:hr@odiseussoftware.com" className="os-btn-ghost">
-            Start a Conversation
-          </a>
+    /* Tall track gives the pinned hero room to play its scroll story. */
+    <div className="os-hero-scroll">
+      <section className="os-hero" aria-labelledby="os-hero-h1">
+        {/* Perspective star-field — three depth layers that warp toward the
+            viewer as the page scrolls, driven by the --p CSS variable. */}
+        <div className="os-hero-warp" aria-hidden="true">
+          <div className="os-hero-warp-layer os-hero-warp-l1" />
+          <div className="os-hero-warp-layer os-hero-warp-l2" />
+          <div className="os-hero-warp-layer os-hero-warp-l3" />
         </div>
-      </div>
 
-      <div className="os-scroll-hint" aria-hidden="true">
-        <span className="os-scroll-hint-label"></span>
-        <span className="os-scroll-hint-bar" />
-      </div>
-    </section>
+        <div className="os-hero-grid" aria-hidden="true" />
+        <div className="os-hero-nodes" aria-hidden="true">
+          {HERO_NODES.map((n, i) => (
+            <div
+              key={i}
+              className="os-hero-node"
+              style={{
+                left: n.left,
+                top: n.top,
+                width: n.size,
+                height: n.size,
+                animationDelay: n.delay,
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="os-hero-content">
+          {/* <span className="os-hero-eyebrow">Odiseus Software · Cloud</span> */}
+          <h1 id="os-hero-h1">
+            Engineering <em>Cloud, AI,</em>
+            <br />
+            and Software Systems
+            <br />
+            That Scale
+          </h1>
+          {/* Full sentence kept on aria-label; words are written in on scroll. */}
+          <p className="os-hero-sub" aria-label={HERO_PARAGRAPH}>
+            {HERO_PARAGRAPH.split(" ").map((word, i) => (
+              <Fragment key={i}>
+                <span className="os-hero-word" aria-hidden="true">
+                  {word}
+                </span>{" "}
+              </Fragment>
+            ))}
+          </p>
+          <div className="os-hero-btns">
+            <a href="/cloud" className="os-btn-primary">
+              Explore Cloud Services
+            </a>
+            <a href="mailto:hr@odiseussoftware.com" className="os-btn-ghost">
+              Start a Conversation
+            </a>
+          </div>
+        </div>
+
+        <div className="os-scroll-hint" aria-hidden="true">
+          <span className="os-scroll-hint-label"></span>
+          <span className="os-scroll-hint-bar" />
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -1535,245 +1991,365 @@ const KEYWORDS = [
 
 function VisionSection() {
   return (
-    <section className="os-vision">
-      <div className="os-vision-inner">
-        <span className="os-eyebrow" data-os-reveal>
-          What we do
-        </span>
-        <h2 className="os-h2" data-os-reveal>
-          Boutique. Senior. <em>Specialist.</em>
-        </h2>
-        <p className="os-vision-sub" data-os-reveal>
-          We are a specialist technology partner — not a body shop, not a
-          generalist firm. Every engagement is led by senior practitioners who
-          have delivered at scale in exactly the discipline you need.
-        </p>
-        <div className="os-keywords" data-os-reveal>
-          {KEYWORDS.map((kw) => (
-            <span key={kw.label} className={`os-kw${kw.hi ? " os-kw-hi" : ""}`}>
-              {kw.label}
-            </span>
-          ))}
+    /* Tall track pins the section while the pills scrub horizontally. */
+    <div className="os-vision-track">
+      <section className="os-vision">
+        <div className="os-vision-inner">
+          <span className="os-eyebrow" data-os-reveal>
+            What we do
+          </span>
+          <h2 className="os-h2" data-os-reveal>
+            Boutique. Senior. <em>Specialist.</em>
+          </h2>
+          <p className="os-vision-sub" data-os-reveal>
+            We are a specialist technology partner — not a body shop, not a
+            generalist firm. Every engagement is led by senior practitioners who
+            have delivered at scale in exactly the discipline you need.
+          </p>
         </div>
-      </div>
-    </section>
+
+        {/* Full-bleed carousel — the row translates on vertical scroll. */}
+        <div className="os-kw-viewport" data-os-reveal>
+          <div className="os-kw-row">
+            {KEYWORDS.map((kw) => (
+              <span
+                key={kw.label}
+                className={`os-kw${kw.hi ? " os-kw-hi" : ""}`}
+              >
+                {kw.label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
   );
 }
 
 function EcosystemMapSection() {
   return (
-    <section className="os-ecosystem" aria-labelledby="os-eco-h2">
-      <div className="os-ecosystem-inner">
-        <span className="os-eyebrow" data-os-reveal>
-          Service Ecosystem
-        </span>
-        <h2 id="os-eco-h2" className="os-h2" data-os-reveal>
-          Eight specialisms. <em>One partner.</em>
-        </h2>
-        <p className="os-eco-sub" data-os-reveal>
-          Every domain connected — engineered to work together.
-        </p>
+    /* Tall track pins the section while the brand core + nodes reveal. */
+    <div className="os-eco-track">
+      <section className="os-ecosystem" aria-labelledby="os-eco-h2">
+        <div className="os-ecosystem-inner">
+          {/* Heading group — zooms out + fades on scroll (hero-style). */}
+          <div className="os-eco-head">
+            <span className="os-eyebrow" data-os-reveal>
+              Service Ecosystem
+            </span>
+            <h2 id="os-eco-h2" className="os-h2" data-os-reveal>
+              Eight specialisms. <em>One partner.</em>
+            </h2>
+            <p className="os-eco-sub" data-os-reveal>
+              Every domain connected — engineered to work together.
+            </p>
+          </div>
 
-        <div className="os-eco-scroll" data-os-reveal>
-          <svg
-            className="os-eco-svg"
-            viewBox="0 0 980 600"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            {/* Orbit guide ring */}
-            <circle
-              cx="490"
-              cy="300"
-              r="240"
-              fill="none"
-              stroke="rgba(26,78,255,0.1)"
-              strokeWidth="1"
-              strokeDasharray="3 10"
-            />
-
-            {/* Spokes from center (490, 300) */}
-            {ECOSYSTEM_NODES.map((node, i) => (
-              <line
-                key={`spoke-${i}`}
-                x1="490"
-                y1="300"
-                x2={node.cx}
-                y2={node.cy}
-                className="os-eco-line"
-                style={{ animationDelay: `${i * 0.6}s` }}
+          <div className="os-eco-scroll" data-os-reveal>
+            <svg
+              className="os-eco-svg"
+              viewBox="0 0 980 600"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              {/* Orbit guide ring */}
+              <circle
+                className="os-eco-ring"
+                cx="490"
+                cy="300"
+                r="240"
+                fill="none"
+                stroke="rgba(26,78,255,0.1)"
+                strokeWidth="1"
+                strokeDasharray="3 10"
               />
-            ))}
 
-            {/* ── Center node ── */}
-            <circle
-              cx="490"
-              cy="300"
-              r="72"
-              fill="rgba(26,78,255,0.08)"
-              stroke="rgba(26,78,255,0.4)"
-              strokeWidth="1.5"
-            />
-            <circle
-              cx="490"
-              cy="300"
-              r="52"
-              fill="rgba(26,78,255,0.16)"
-              stroke="#1a4eff"
-              strokeWidth="1.5"
-            >
-              <animate
-                attributeName="r"
-                values="52;56;52"
-                dur="4s"
-                repeatCount="indefinite"
-              />
-            </circle>
-            <text
-              x="490"
-              y="294"
-              textAnchor="middle"
-              dominantBaseline="middle"
-              fontSize="24"
-              fontFamily="Instrument Serif, serif"
-              fontStyle="italic"
-              fill="#ffffff"
-            >
-              odiseus
-            </text>
-            <text
-              x="490"
-              y="316"
-              textAnchor="middle"
-              fontSize="9"
-              fontFamily="Geist Mono, monospace"
-              fill="rgba(255,255,255,0.38)"
-              letterSpacing="0.12em"
-            >
-              SOFTWARE
-            </text>
+              {/* Spokes from center (490, 300) */}
+              {ECOSYSTEM_NODES.map((node, i) => (
+                <line
+                  key={`spoke-${i}`}
+                  x1="490"
+                  y1="300"
+                  x2={node.cx}
+                  y2={node.cy}
+                  className="os-eco-line"
+                  style={{ animationDelay: `${i * 0.6}s` }}
+                />
+              ))}
 
-            {/* ── Satellite nodes ── */}
-            {ECOSYSTEM_NODES.map((node, i) => {
-              const words = node.label.split(" ");
-              const twoLine = words.length > 1;
-              /* Vertical anchors: keep label + index inside the inner circle */
-              const labelY = twoLine ? node.cy - 14 : node.cy - 5;
-              const indexY = twoLine ? node.cy + 22 : node.cy + 16;
-
-              return (
-                <g key={`eco-node-${i}`}>
-                  {/* Outer halo */}
-                  <circle
-                    cx={node.cx}
-                    cy={node.cy}
-                    r="52"
-                    fill="rgba(26,78,255,0.06)"
-                    stroke="rgba(26,78,255,0.22)"
-                    strokeWidth="1.5"
+              {/* ── Center node (zooms in from depth first) ── */}
+              <g className="os-eco-center">
+                <circle
+                  cx="490"
+                  cy="300"
+                  r="72"
+                  fill="rgba(26,78,255,0.08)"
+                  stroke="rgba(26,78,255,0.4)"
+                  strokeWidth="1.5"
+                />
+                <circle
+                  cx="490"
+                  cy="300"
+                  r="52"
+                  fill="rgba(26,78,255,0.16)"
+                  stroke="#1a4eff"
+                  strokeWidth="1.5"
+                >
+                  <animate
+                    attributeName="r"
+                    values="52;56;52"
+                    dur="4s"
+                    repeatCount="indefinite"
                   />
-                  {/* Inner pulsing circle */}
-                  <circle
-                    cx={node.cx}
-                    cy={node.cy}
-                    r="38"
-                    fill="rgba(26,78,255,0.12)"
-                    stroke="rgba(26,78,255,0.55)"
-                    strokeWidth="1.5"
-                  >
-                    <animate
-                      attributeName="r"
-                      values="38;41;38"
-                      dur={`${3.2 + i * 0.38}s`}
-                      repeatCount="indefinite"
-                    />
-                  </circle>
+                </circle>
+                <text
+                  x="490"
+                  y="294"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize="24"
+                  fontFamily="Instrument Serif, serif"
+                  fontStyle="italic"
+                  fill="#ffffff"
+                >
+                  odiseus
+                </text>
+                <text
+                  x="490"
+                  y="316"
+                  textAnchor="middle"
+                  fontSize="9"
+                  fontFamily="Geist Mono, monospace"
+                  fill="rgba(255,255,255,0.38)"
+                  letterSpacing="0.12em"
+                >
+                  SOFTWARE
+                </text>
+              </g>
 
-                  {/* Label — split to two lines when multi-word */}
-                  {twoLine ? (
-                    <text
-                      textAnchor="middle"
-                      fontFamily="Geist Mono, monospace"
-                      fontSize="10"
-                      fill="rgba(255,255,255,0.92)"
-                      letterSpacing="0.04em"
+              {/* ── Satellite nodes ── */}
+              {ECOSYSTEM_NODES.map((node, i) => {
+                const words = node.label.split(" ");
+                const twoLine = words.length > 1;
+                /* Vertical anchors: keep label + index inside the inner circle */
+                const labelY = twoLine ? node.cy - 14 : node.cy - 5;
+                const indexY = twoLine ? node.cy + 22 : node.cy + 16;
+
+                /* Start the reveal pulled ~30% back toward the brand core so
+                 each node slides outward into its final orbital slot. */
+                const tx = (-(node.cx - 490) * 0.3).toFixed(1);
+                const ty = (-(node.cy - 300) * 0.3).toFixed(1);
+
+                return (
+                  <g
+                    key={`eco-node-${i}`}
+                    className="os-eco-node"
+                    style={{ "--os-tx": `${tx}px`, "--os-ty": `${ty}px` }}
+                  >
+                    {/* Outer halo */}
+                    <circle
+                      cx={node.cx}
+                      cy={node.cy}
+                      r="52"
+                      fill="rgba(26,78,255,0.06)"
+                      stroke="rgba(26,78,255,0.22)"
+                      strokeWidth="1.5"
+                    />
+                    {/* Inner pulsing circle */}
+                    <circle
+                      className="os-eco-core"
+                      cx={node.cx}
+                      cy={node.cy}
+                      r="38"
+                      fill="rgba(26,78,255,0.12)"
+                      stroke="rgba(26,78,255,0.55)"
+                      strokeWidth="1.5"
                     >
-                      <tspan x={node.cx} y={labelY}>
-                        {words[0]}
-                      </tspan>
-                      <tspan x={node.cx} dy="15">
-                        {words[1]}
-                      </tspan>
-                    </text>
-                  ) : (
+                      <animate
+                        attributeName="r"
+                        values="38;41;38"
+                        dur={`${3.2 + i * 0.38}s`}
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+
+                    {/* Label — split to two lines when multi-word */}
+                    {twoLine ? (
+                      <text
+                        textAnchor="middle"
+                        fontFamily="Geist Mono, monospace"
+                        fontSize="10"
+                        fill="rgba(255,255,255,0.92)"
+                        letterSpacing="0.04em"
+                      >
+                        <tspan x={node.cx} y={labelY}>
+                          {words[0]}
+                        </tspan>
+                        <tspan x={node.cx} dy="15">
+                          {words[1]}
+                        </tspan>
+                      </text>
+                    ) : (
+                      <text
+                        x={node.cx}
+                        y={labelY}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                        fontFamily="Geist Mono, monospace"
+                        fontSize="11"
+                        fill="rgba(255,255,255,0.92)"
+                        letterSpacing="0.04em"
+                      >
+                        {node.label}
+                      </text>
+                    )}
+
+                    {/* Index badge */}
                     <text
                       x={node.cx}
-                      y={labelY}
+                      y={indexY}
                       textAnchor="middle"
-                      dominantBaseline="middle"
                       fontFamily="Geist Mono, monospace"
-                      fontSize="11"
-                      fill="rgba(255,255,255,0.92)"
-                      letterSpacing="0.04em"
+                      fontSize="9"
+                      fill="rgba(26,78,255,0.85)"
+                      letterSpacing="0.06em"
                     >
-                      {node.label}
+                      {`0${i + 1}`}
                     </text>
-                  )}
-
-                  {/* Index badge */}
-                  <text
-                    x={node.cx}
-                    y={indexY}
-                    textAnchor="middle"
-                    fontFamily="Geist Mono, monospace"
-                    fontSize="9"
-                    fill="rgba(26,78,255,0.85)"
-                    letterSpacing="0.06em"
-                  >
-                    {`0${i + 1}`}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }
+
+/* Story scaffolding for each chapter — a concept line + a figure caption.
+   Order matches CATEGORIES / CATEGORY_SVGS (01–08). */
+const SVC_META = [
+  {
+    kicker: "From on-prem to cloud-native.",
+    figure: "Fig.01 — Migration journey",
+  },
+  {
+    kicker: "A pipeline that ships safely.",
+    figure: "Fig.02 — Delivery pipeline",
+  },
+  {
+    kicker: "Orchestrated, cloud-native foundations.",
+    figure: "Fig.03 — Infrastructure fabric",
+  },
+  {
+    kicker: "From data to inference.",
+    figure: "Fig.04 — Model & inference flow",
+  },
+  { kicker: "Raw data into decisions.", figure: "Fig.05 — Insight pipeline" },
+  { kicker: "Defence in depth.", figure: "Fig.06 — Layered protection" },
+  {
+    kicker: "Observe. Detect. Respond.",
+    figure: "Fig.07 — Observability loop",
+  },
+  {
+    kicker: "Monolith to microservices.",
+    figure: "Fig.08 — Modernization path",
+  },
+];
 
 function ServiceSection({ category, index }) {
   const flip = index % 2 !== 0;
   const darkSvg = DARK_SVG_IDX.has(index);
+  const meta = SVC_META[index];
+  const chapter = String(index + 1).padStart(2, "0");
 
   return (
-    <section className="os-svc-section" aria-labelledby={`os-svc-h2-${index}`}>
+    <section
+      className={`os-svc-section${darkSvg ? " os-svc-dark" : ""}`}
+      aria-labelledby={`os-svc-h2-${index}`}
+      data-os-chapter={chapter}
+    >
       <div className={`os-svc-inner${flip ? " os-flip" : ""}`}>
-        {/* Content */}
+        {/* Story column */}
         <div className="os-svc-content">
-          <span className="os-svc-num" data-os-reveal>
-            {category.num}
-          </span>
-          <h2 id={`os-svc-h2-${index}`} className="os-svc-h2" data-os-reveal>
+          <div
+            className="os-svc-chapter"
+            data-os-reveal
+            style={{ transitionDelay: "0ms" }}
+          >
+            <span className="os-svc-ch-num serif">{chapter}</span>
+            <span className="os-svc-ch-line" aria-hidden="true" />
+            <span className="os-svc-ch-label">Chapter {chapter} / 08</span>
+          </div>
+
+          <h2
+            id={`os-svc-h2-${index}`}
+            className="os-svc-h2"
+            data-os-reveal
+            style={{ transitionDelay: "70ms" }}
+          >
             {category.title}
           </h2>
-          <p className="os-svc-desc" data-os-reveal>
+          <p
+            className="os-svc-kicker serif"
+            data-os-reveal
+            style={{ transitionDelay: "140ms" }}
+          >
+            {meta.kicker}
+          </p>
+          <p
+            className="os-svc-desc"
+            data-os-reveal
+            style={{ transitionDelay: "210ms" }}
+          >
             {category.desc}
           </p>
-          <ul className="os-svc-cards" role="list" data-os-reveal>
-            {category.services.map((name) => (
-              <li key={name} className="os-svc-card">
-                {name}
+
+          <div
+            className="os-svc-cap-head"
+            data-os-reveal
+            style={{ transitionDelay: "280ms" }}
+          >
+            <span className="os-svc-cap-label">Capabilities</span>
+            <span className="os-svc-cap-count mono">
+              {String(category.services.length).padStart(2, "0")}
+            </span>
+          </div>
+          <ul className="os-svc-caps" role="list">
+            {category.services.map((name, i) => (
+              <li
+                key={name}
+                className="os-svc-cap"
+                data-os-reveal
+                style={{ transitionDelay: `${320 + Math.min(i, 9) * 55}ms` }}
+              >
+                <span className="os-svc-cap-dot" aria-hidden="true" />
+                <span className="os-svc-cap-name">{name}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Visual */}
-        <div className="os-svc-visual" data-os-reveal>
-          <div className={`os-svc-svg-wrap${darkSvg ? " os-dark" : ""}`}>
-            {CATEGORY_SVGS[index]}
-          </div>
+        {/* Sticky figure column */}
+        <div className="os-svc-visual">
+          <figure className="os-svc-figure">
+            <div
+              className={`os-svc-svg-wrap${darkSvg ? " os-dark" : ""}`}
+              data-os-reveal
+              style={{ transitionDelay: "120ms" }}
+            >
+              {CATEGORY_SVGS[index]}
+            </div>
+            <figcaption
+              className="os-svc-figcap mono"
+              data-os-reveal
+              style={{ transitionDelay: "260ms" }}
+            >
+              <span className="os-svc-figcap-mark" aria-hidden="true" />
+              {meta.figure}
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
@@ -2054,7 +2630,11 @@ function CTASection() {
 
 function OsNav() {
   return (
-    <nav className="site-nav os-nav-dark" id="mainNav" aria-label="Primary navigation">
+    <nav
+      className="site-nav os-nav-dark"
+      id="mainNav"
+      aria-label="Primary navigation"
+    >
       <a className="nav-logo" href="/" aria-label="Odiseus home">
         <span className="nav-logo-dot"></span>
         <span>
@@ -2223,6 +2803,10 @@ export default function OdiseusStoryClient() {
   useCountUp();
   useCloudCursor();
   useAdaptiveNav();
+  useHeroScroll();
+  useEcosystemScroll();
+  useVisionScroll();
+  useServiceStory();
 
   return (
     <>
