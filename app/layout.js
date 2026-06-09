@@ -1,3 +1,5 @@
+import GlobalChatBox from "./components/GlobalChatBox";
+
 export const metadata = {
   title: "Odiseus",
   description:
@@ -24,7 +26,10 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <GlobalChatBox />
+      </body>
     </html>
   );
 }
