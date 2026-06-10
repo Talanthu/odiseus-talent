@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, Fragment } from "react";
+import GlowButton from "./GlowButton";
 
 /* ─── ADAPTIVE NAV (dark ↔ light glass based on scroll position) ─── */
 function useAdaptiveNav() {
@@ -1956,12 +1957,16 @@ function HeroSection() {
             ))}
           </p>
           <div className="os-hero-btns">
-            <a href="/cloud" className="os-btn-primary">
+            <GlowButton href="/cloud" variant="primary" className="os-btn-primary">
               Explore Cloud Services
-            </a>
-            <a href="mailto:hr@odiseussoftware.com" className="os-btn-ghost">
+            </GlowButton>
+            <GlowButton
+              href="mailto:hr@odiseussoftware.com"
+              variant="dark"
+              className="os-btn-ghost"
+            >
               Start a Conversation
-            </a>
+            </GlowButton>
           </div>
         </div>
 
@@ -2616,12 +2621,16 @@ function CTASection() {
           engineers, the right architecture, and the right experience.
         </p>
         <div className="os-cta-btns" data-os-reveal>
-          <a href="/cloud" className="os-btn-primary">
+          <GlowButton href="/cloud" variant="primary" className="os-btn-primary">
             Explore Cloud Services
-          </a>
-          <a href="mailto:hr@odiseussoftware.com" className="os-btn-ghost">
+          </GlowButton>
+          <GlowButton
+            href="mailto:hr@odiseussoftware.com"
+            variant="outline"
+            className="os-btn-ghost"
+          >
             Start a Conversation
-          </a>
+          </GlowButton>
         </div>
       </div>
     </section>
@@ -2667,9 +2676,13 @@ function OsNav() {
       </ul>
 
       <div className="nav-right">
-        <a href="mailto:hr@odiseussoftware.com" className="nav-cta">
+        <GlowButton
+          href="mailto:hr@odiseussoftware.com"
+          variant="dark"
+          className="nav-cta"
+        >
           Start a conversation
-        </a>
+        </GlowButton>
       </div>
     </nav>
   );

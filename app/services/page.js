@@ -1,6 +1,7 @@
 import "../home.css";
 import "./services.css";
 import NavClient from "../components/NavClient";
+import GlowButton from "../components/GlowButton";
 
 export const metadata = {
   title: "Odiseus — · DevOps · Cloud · AI · Data · Security",
@@ -224,12 +225,16 @@ export default function ServicesPage() {
             role and we&apos;ll find the engineer.
           </p>
           <div className="svc-cta-btns">
-            <a href="mailto:hr@odiseussoftware.com" className="svc-btn-primary">
+            <GlowButton
+              href="mailto:hr@odiseussoftware.com"
+              variant="primary"
+              className="svc-btn-primary"
+            >
               Get in touch
-            </a>
-            <a href="/" className="svc-btn-secondary">
+            </GlowButton>
+            <GlowButton href="/" variant="secondary" className="svc-btn-secondary">
               Back to home
-            </a>
+            </GlowButton>
           </div>
         </div>
       </section>

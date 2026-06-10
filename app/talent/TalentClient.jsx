@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import GlowButton from "../components/GlowButton";
 
 export default function TalentClient() {
   useEffect(() => {
@@ -277,9 +278,9 @@ export default function TalentClient() {
         </ul>
 
         <div className="nav-right">
-          <a href="#cta" className="nav-cta">
+          <GlowButton href="#cta" variant="dark" className="nav-cta">
             Start a Conversation
-          </a>
+          </GlowButton>
         </div>
       </nav>
 
@@ -309,12 +310,12 @@ export default function TalentClient() {
           </p>
 
           <div className="hero-ctas">
-            <a href="#roles" className="btn-dark">
+            <GlowButton href="#roles" variant="dark" className="btn-dark">
               Browse Open Roles
-            </a>
-            <a href="#specialisms" className="btn-outline">
+            </GlowButton>
+            <GlowButton href="#specialisms" variant="outline" className="btn-outline">
               Our Specialisms
-            </a>
+            </GlowButton>
           </div>
         </div>
 
@@ -1008,12 +1009,16 @@ export default function TalentClient() {
           architect, we&apos;d love to hear your challenge.
         </p>
         <div className="cta-btns">
-          <a href="mailto:info@odiseussoftware.com" className="btn-dark">
+          <GlowButton
+            href="mailto:info@odiseussoftware.com"
+            variant="dark"
+            className="btn-dark"
+          >
             Start a Conversation
-          </a>
-          <a href="#roles" className="btn-outline">
+          </GlowButton>
+          <GlowButton href="#roles" variant="outline" className="btn-outline">
             Browse Roles
-          </a>
+          </GlowButton>
         </div>
       </section>
 

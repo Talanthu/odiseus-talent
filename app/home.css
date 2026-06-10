@@ -1319,3 +1319,78 @@
           gap: 16px;
         }
       }
+
+      /* ─── GLOW BUTTON ─── */
+      .glow-btn {
+        --glow-line-color: rgba(255, 255, 255, 0.9);
+        --glow-blur-color: rgba(255, 255, 255, 0.45);
+        --glow-line-length: 20;
+        --glow-line-thickness: 2px;
+        --glow-blur-size: 10px;
+        --animation-speed: 1200ms;
+        --_off: 100px;
+        position: relative;
+      }
+      .glow-btn__svg {
+        pointer-events: none;
+        position: absolute;
+        inset: calc(var(--_off) / -2);
+        width: calc(100% + var(--_off));
+        height: calc(100% + var(--_off));
+        overflow: visible;
+        opacity: 0;
+      }
+      .glow-btn__blur,
+      .glow-btn__line {
+        width: calc(100% - var(--_off));
+        height: calc(100% - var(--_off));
+        x: calc(var(--_off) / 2);
+        y: calc(var(--_off) / 2);
+        fill: transparent;
+        stroke-dasharray: var(--glow-line-length) calc(50 - var(--glow-line-length));
+      }
+      .glow-btn__line {
+        stroke: var(--glow-line-color);
+        stroke-width: var(--glow-line-thickness);
+      }
+      .glow-btn__blur {
+        filter: blur(var(--glow-blur-size));
+        stroke: var(--glow-blur-color);
+        stroke-width: var(--glow-blur-size);
+      }
+      .glow-btn:is(:hover, :focus-visible) .glow-btn__blur,
+      .glow-btn:is(:hover, :focus-visible) .glow-btn__line {
+        stroke-dashoffset: -80px;
+        transition:
+          stroke-dashoffset var(--animation-speed) ease-in,
+          stroke-dasharray var(--animation-speed) ease-in;
+      }
+      .glow-btn:is(:hover, :focus-visible) .glow-btn__svg {
+        animation: glow-vis var(--animation-speed) ease-in;
+      }
+      @keyframes glow-vis {
+        0%, 100% { opacity: 0; }
+        25%, 75%  { opacity: 1; }
+      }
+      /* dark — ink bg, white glow */
+      .glow-btn--dark {
+        --glow-line-color: rgba(255, 255, 255, 0.9);
+        --glow-blur-color: rgba(255, 255, 255, 0.45);
+      }
+      /* outline — transparent bg, blue glow */
+      .glow-btn--outline {
+        --glow-line-color: var(--blue);
+        --glow-blur-color: rgba(26, 78, 255, 0.45);
+        --glow-blur-size: 8px;
+      }
+      /* primary — blue bg, white glow */
+      .glow-btn--primary {
+        --glow-line-color: rgba(255, 255, 255, 0.9);
+        --glow-blur-color: rgba(255, 255, 255, 0.45);
+      }
+      /* secondary — white bg, blue glow */
+      .glow-btn--secondary {
+        --glow-line-color: var(--blue);
+        --glow-blur-color: rgba(26, 78, 255, 0.45);
+        --glow-blur-size: 8px;
+      }
