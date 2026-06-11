@@ -1,3 +1,5 @@
+import GlowButton from "./GlowButton";
+
 export default function NavClient({ active }) {
   return (
     <nav className="site-nav" id="mainNav" aria-label="Primary navigation">
@@ -45,9 +47,13 @@ export default function NavClient({ active }) {
       </ul>
 
       <div className="nav-right">
-        <a href="mailto:hr@odiseussoftware.com" className="nav-cta">
+        <GlowButton
+          href="mailto:hr@odiseussoftware.com"
+          variant="dark"
+          className="nav-cta"
+        >
           Start a conversation
-        </a>
+        </GlowButton>
       </div>
     </nav>
   );

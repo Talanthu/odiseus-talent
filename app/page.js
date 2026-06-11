@@ -1,6 +1,7 @@
 import "./home.css";
 import SoftwareInfographics from "./components/SoftwareInfographics";
 import NavClient from "./components/NavClient";
+import GlowButton from "./components/GlowButton";
 
 export const metadata = {
   title: "Odiseus — Consulting in DevOps, Cloud, AI & Business Analysis",
@@ -532,10 +533,10 @@ export default function HomePage() {
           <br />
           We&apos;ll bring the right people.
         </h2>
-        <a href="#" className="cta-btn">
+        <GlowButton href="#" variant="dark" className="cta-btn">
           <span>Start a conversation</span>
           <span className="arrow">→</span>
-        </a>
+        </GlowButton>
       </section>
 
       {/* ─── FOOTER ─── */}
